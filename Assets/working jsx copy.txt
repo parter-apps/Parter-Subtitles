@@ -1,0 +1,1480 @@
+var h = null;
+
+(function () {
+    var OUT = [];
+
+    var SETTINGS = {
+        MOGRT_PATH: "/Users/danieldickinson/Documents/GitHub/Parter Subtitles/Assets/subtitles_mogrt.mogrt",
+        JSON_PATH: "/Users/danieldickinson/Documents/GitHub/Parter Subtitles/Assets/layout copy2.json",
+        WORD_TIMINGS_JSON_PATH: "/Users/danieldickinson/Documents/GitHub/Parter Subtitles/Assets/Raveyard - Camara Script 3.json",
+        TICKS_PER_SECOND: 254016000000,
+        APPLY_POSITION: true,
+        APPLY_FONT_STYLE: true,
+        APPLY_FONT_SIZE: true,
+
+        MOGRT_COMPONENT_NAME_HINTS: ["Graphic Parameters", "Mogrt"],
+        EFFECTS_POSITION_COMPONENT_NAME_HINTS: ["Motion", "Vector Motion"],
+        TEXT_PROP_NAME_HINT: "",
+
+        // Posición del panel Motion / Vector Motion en Effects Controls.
+        POSITION_PROP_NAME_HINTS: ["Position"],
+        POSITION_VALUES_ARE_PIXEL_COORDS: true,
+
+        // Si el layout externo usa otro sistema de coordenadas, puedes ajustar aquí.
+        POSITION_X_OFFSET: 0,
+        POSITION_Y_OFFSET: 0,
+
+        // Si tu prop de posición espera valores normalizados o distintos,
+        // este factor permite escalar X/Y antes de escribirlos.
+        POSITION_X_SCALE: 1,
+        POSITION_Y_SCALE: 1
+    };
+
+    function log(s) {
+        OUT.push("[mogrt_from_layout_json] " + s);
+    }
+
+    function fail(s) {
+        log("ERROR: " + s);
+        return OUT.join("\n");
+    }
+
+    function ok(s) {
+        log("OK: " + s);
+        return OUT.join("\n");
+    }
+
+    function safeToString(v) {
+        try {
+            if (v === undefined) {
+                return "undefined";
+            }
+            if (v === null) {
+                return "null";
+            }
+            return String(v);
+        } catch (e) {
+            return "[toString error]";
+        }
+    }
+
+    function trimString(s) {
+        if (s === null || s === undefined) {
+            return "";
+        }
+        return String(s).replace(/^\s+|\s+$/g, "");
+    }
+
+    function normalizeInternalSpaces(s) {
+        s = trimString(s);
+        s = s.replace(/[ \t]+/g, " ");
+        return s;
+    }
+
+    function readTextFile(path) {
+        var file, content;
+        file = new File(path);
+
+        if (!file.exists) {
+            return {
+                ok: false,
+                error: "No existe el archivo: " + path
+            };
+        }
+
+        content = "";
+        try {
+            file.encoding = "UTF-8";
+            if (!file.open("r")) {
+                return {
+                    ok: false,
+                    error: "No se pudo abrir el archivo: " + path
+                };
+            }
+
+            content = file.read();
+            file.close();
+
+            if (content && content.charCodeAt(0) === 65279) {
+                content = content.substring(1);
+            }
+
+            return {
+                ok: true,
+                content: content
+            };
+        } catch (e) {
+            try {
+                file.close();
+            } catch (e2) {}
+            return {
+                ok: false,
+                error: "Error leyendo archivo: " + safeToString(e)
+            };
+        }
+    }
+
+    function parseJSONUnsafe(str) {
+        try {
+            return eval("(" + str + ")");
+        } catch (e) {
+            return null;
+        }
+    }
+
+    function escapeForJSON(str) {
+        str = String(str);
+        str = str.replace(/\\/g, "\\\\");
+        str = str.replace(/"/g, "\\\"");
+        str = str.replace(/\r/g, "\\r");
+        str = str.replace(/\n/g, "\\n");
+        return str;
+    }
+
+    function replaceSingleValue(raw, key, replacement, isString) {
+        var escaped;
+
+        if (isString) {
+            escaped = "\"" + escapeForJSON(replacement) + "\"";
+        } else {
+            escaped = String(replacement);
+        }
+
+        raw = raw.replace(new RegExp("(\"" + key + "\"\\s*:\\s*\\[\\s*)\"[^\"]*\"(\\s*\\])"), "$1" + escaped + "$2");
+        raw = raw.replace(new RegExp("(\"" + key + "\"\\s*:\\s*\\[\\s*)-?\\d+(?:\\.\\d+)?(\\s*\\])"), "$1" + escaped + "$2");
+        raw = raw.replace(new RegExp("(\"" + key + "\"\\s*:\\s*)\"(?:\\\\.|[^\"])*\""), "$1" + escaped);
+        raw = raw.replace(new RegExp("(\"" + key + "\"\\s*:\\s*)-?\\d+(?:\\.\\d+)?"), "$1" + escaped);
+
+        return raw;
+    }
+
+    function replaceRunLengths(raw, textValue) {
+        var len;
+
+        len = String(textValue).length;
+        raw = raw.replace(/("capPropTextRunCount"\s*:\s*)\d+/g, "$11");
+        raw = raw.replace(/("[^"]*RunLength[^"]*"\s*:\s*\[\s*)-?\d+(?:\.\d+)?(\s*\])/g, "$1" + len + "$2");
+        raw = raw.replace(/("[^"]*RunLength[^"]*"\s*:\s*)-?\d+(?:\.\d+)?/g, "$1" + len);
+
+        return raw;
+    }
+
+    function timecodeToSeconds(tc, fps) {
+        var m, hh, mm, ss, ff;
+        m = String(tc).match(/^(\d{2}):(\d{2}):(\d{2}):(\d{2})$/);
+        if (!m) {
+            return null;
+        }
+
+        hh = parseInt(m[1], 10);
+        mm = parseInt(m[2], 10);
+        ss = parseInt(m[3], 10);
+        ff = parseInt(m[4], 10);
+
+        return (hh * 3600) + (mm * 60) + ss + (ff / fps);
+    }
+
+    function parseTimecodeRange(raw, fps) {
+        var parts, startTC, endTC, startSec, endSec;
+
+        if (!raw) {
+            return null;
+        }
+
+        parts = String(raw).split("-");
+        if (parts.length !== 2) {
+            return null;
+        }
+
+        startTC = trimString(parts[0]);
+        endTC = trimString(parts[1]);
+
+        startSec = timecodeToSeconds(startTC, fps);
+        endSec = timecodeToSeconds(endTC, fps);
+
+        if (startSec === null || endSec === null) {
+            return null;
+        }
+
+        return {
+            startTC: startTC,
+            endTC: endTC,
+            startSeconds: startSec,
+            endSeconds: endSec
+        };
+    }
+
+    function parseLayoutJSON(raw, fps) {
+        var data, layouts, i, layout, parsedTC, result, elements, j, el;
+
+        result = [];
+        data = parseJSONUnsafe(raw);
+
+        if (!data || !data.layouts || !data.layouts.length) {
+            return result;
+        }
+
+        layouts = data.layouts;
+
+        for (i = 0; i < layouts.length; i++) {
+            layout = layouts[i];
+            parsedTC = parseTimecodeRange(layout.timecode, fps);
+
+            if (!parsedTC) {
+                log("Layout ignorado por timecode inválido en índice " + i + ": " + safeToString(layout.timecode));
+                continue;
+            }
+
+            elements = [];
+            if (layout.elements && layout.elements.length) {
+                for (j = 0; j < layout.elements.length; j++) {
+                    el = layout.elements[j];
+                    if (!el) {
+                        continue;
+                    }
+
+                    if (!trimString(el.text)) {
+                        continue;
+                    }
+
+                    elements.push({
+                        text: String(el.text),
+                        x: Number(el.x),
+                        y: Number(el.y),
+                        width: Number(el.width),
+                        height: Number(el.height),
+                        fill: safeToString(el.fill),
+                        opacity: Number(el.opacity),
+                        fontFamily: safeToString(el.fontFamily),
+                        fontSize: Number(el.fontSize),
+                        fontWeight: Number(el.fontWeight),
+                        rotation: Number(el.rotation)
+                    });
+                }
+            }
+
+            if (!elements.length) {
+                log("Layout ignorado por no tener elements válidos en índice " + i);
+                continue;
+            }
+
+            result.push({
+                phrase: safeToString(layout.phrase),
+                background: safeToString(layout.background),
+                startTC: parsedTC.startTC,
+                endTC: parsedTC.endTC,
+                startSeconds: parsedTC.startSeconds,
+                endSeconds: parsedTC.endSeconds,
+                elements: elements
+            });
+        }
+
+        return result;
+    }
+
+    function normalizeWordToken(s) {
+        s = safeToString(s).toLowerCase();
+        s = s.replace(/[\u2018\u2019]/g, "'");
+        s = s.replace(/^[^a-z0-9']+|[^a-z0-9']+$/g, "");
+        return s;
+    }
+
+    function wordsMatch(a, b) {
+        return normalizeWordToken(a) === normalizeWordToken(b);
+    }
+
+    function parseWordTimingsJSON(raw) {
+        var data, result, segments, i, segment, words, j, word, startSeconds, durationSeconds;
+
+        result = [];
+        data = parseJSONUnsafe(raw);
+
+        if (!data || !data.segments || !data.segments.length) {
+            return result;
+        }
+
+        segments = data.segments;
+
+        for (i = 0; i < segments.length; i++) {
+            segment = segments[i];
+            if (!segment || !segment.words || !segment.words.length) {
+                continue;
+            }
+
+            words = segment.words;
+
+            for (j = 0; j < words.length; j++) {
+                word = words[j];
+                if (!word || word.type !== "word" || !trimString(word.text)) {
+                    continue;
+                }
+
+                startSeconds = Number(word.start);
+                durationSeconds = Number(word.duration);
+
+                if (isNaN(startSeconds)) {
+                    continue;
+                }
+
+                if (isNaN(durationSeconds) || durationSeconds < 0) {
+                    durationSeconds = 0;
+                }
+
+                result.push({
+                    text: safeToString(word.text),
+                    normalizedText: normalizeWordToken(word.text),
+                    startSeconds: startSeconds,
+                    durationSeconds: durationSeconds,
+                    endSeconds: startSeconds + durationSeconds
+                });
+            }
+        }
+
+        return result;
+    }
+
+    function getSequence() {
+        try {
+            return app.project.activeSequence;
+        } catch (e) {
+            return null;
+        }
+    }
+
+    function getSequenceFPS(seq) {
+        var ticksPerFrame;
+
+        if (!seq) {
+            return null;
+        }
+
+        try {
+            ticksPerFrame = Number(seq.timebase);
+        } catch (e) {
+            return null;
+        }
+
+        if (!ticksPerFrame || ticksPerFrame <= 0) {
+            return null;
+        }
+
+        return SETTINGS.TICKS_PER_SECOND / ticksPerFrame;
+    }
+
+    function secondsToTimeObject(sec) {
+        var t = new Time();
+        t.seconds = Number(sec);
+        return t;
+    }
+
+    function getVideoTrackCount(seq) {
+        try {
+            if (!seq || !seq.videoTracks) {
+                return 0;
+            }
+            return seq.videoTracks.numTracks;
+        } catch (e) {
+            return 0;
+        }
+    }
+
+    function getTrack(seq, trackIndex) {
+        try {
+            if (!seq || !seq.videoTracks) {
+                return null;
+            }
+            if (trackIndex < 0 || trackIndex >= seq.videoTracks.numTracks) {
+                return null;
+            }
+            return seq.videoTracks[trackIndex];
+        } catch (e) {
+            return null;
+        }
+    }
+
+    function getTrackClipCount(track) {
+        try {
+            if (!track || !track.clips) {
+                return 0;
+            }
+            return track.clips.numItems;
+        } catch (e) {
+            return 0;
+        }
+    }
+
+    function getLastClipOnTrack(track) {
+        var count;
+        try {
+            count = track.clips.numItems;
+            if (count < 1) {
+                return null;
+            }
+            return track.clips[count - 1];
+        } catch (e) {
+            return null;
+        }
+    }
+
+    function getFirstExistingClipSummary(seq) {
+        var i, track, clip;
+        for (i = 0; i < getVideoTrackCount(seq); i++) {
+            track = getTrack(seq, i);
+            if (track && track.clips && track.clips.numItems > 0) {
+                clip = track.clips[0];
+                return {
+                    trackIndex: i,
+                    name: safeToString(clip.name),
+                    start: safeToString(clip.start.seconds)
+                };
+            }
+        }
+        return null;
+    }
+
+    function getHighestOccupiedVideoTrackIndex(seq) {
+        var i, track;
+
+        for (i = getVideoTrackCount(seq) - 1; i >= 0; i--) {
+            track = getTrack(seq, i);
+            if (track && track.clips && track.clips.numItems > 0) {
+                return i;
+            }
+        }
+
+        return -1;
+    }
+
+    function getNewlyImportedClip(seq, trackIndex, beforeCount, approxStartSec) {
+        var track, afterCount, clip, i, bestClip, bestDistance, dist, clipStart;
+
+        track = getTrack(seq, trackIndex);
+        if (!track) {
+            return null;
+        }
+
+        afterCount = getTrackClipCount(track);
+
+        if (afterCount > beforeCount) {
+            return getLastClipOnTrack(track);
+        }
+
+        bestClip = null;
+        bestDistance = 999999999;
+
+        try {
+            for (i = 0; i < track.clips.numItems; i++) {
+                clip = track.clips[i];
+                if (!clip) {
+                    continue;
+                }
+                clipStart = Number(clip.start.seconds);
+                dist = Math.abs(clipStart - approxStartSec);
+                if (dist < bestDistance) {
+                    bestDistance = dist;
+                    bestClip = clip;
+                }
+            }
+        } catch (e) {}
+
+        return bestClip;
+    }
+
+    function importMogrt(seq, mogrtPath, startSeconds, trackIndex) {
+        var track, beforeCount, clip, imported;
+
+        track = getTrack(seq, trackIndex);
+        if (!track) {
+            return {
+                ok: false,
+                error: "No existe el video track índice " + trackIndex
+            };
+        }
+
+        beforeCount = getTrackClipCount(track);
+
+        try {
+            imported = seq.importMGT(mogrtPath, secondsToTimeObject(startSeconds).ticks, trackIndex, 0);
+        } catch (e) {
+            return {
+                ok: false,
+                error: "importMGT falló: " + safeToString(e)
+            };
+        }
+
+        clip = imported;
+        if (!clip) {
+            clip = getNewlyImportedClip(seq, trackIndex, beforeCount, startSeconds);
+        }
+
+        if (!clip) {
+            return {
+                ok: false,
+                error: "No se pudo localizar el clip importado."
+            };
+        }
+
+        return {
+            ok: true,
+            clip: clip
+        };
+    }
+
+    function moveClipIfPossible(clip, targetStartSeconds) {
+        var delta, t;
+
+        if (!clip) {
+            return false;
+        }
+
+        try {
+            delta = Number(targetStartSeconds) - Number(clip.start.seconds);
+            t = secondsToTimeObject(delta);
+            clip.move(t);
+            return true;
+        } catch (e) {
+            return false;
+        }
+    }
+
+    function setClipEndIfPossible(clip, targetEndSeconds) {
+        if (!clip) {
+            return false;
+        }
+
+        try {
+            clip.end = secondsToTimeObject(targetEndSeconds);
+            return true;
+        } catch (e) {
+            return false;
+        }
+    }
+
+    function setClipVisibleDurationIfPossible(clip, targetDurationSeconds) {
+        var startSec, inSec, targetEndSec, targetOutSec;
+
+        if (!clip) {
+            return false;
+        }
+
+        try {
+            startSec = Number(clip.start.seconds);
+            inSec = Number(clip.inPoint.seconds);
+            targetEndSec = startSec + Number(targetDurationSeconds);
+            targetOutSec = inSec + Number(targetDurationSeconds);
+
+            clip.outPoint = secondsToTimeObject(targetOutSec);
+            clip.end = secondsToTimeObject(targetEndSec);
+            return true;
+        } catch (e) {
+            return false;
+        }
+    }
+
+    function findTextPropInClip(clip) {
+        var i, j, comp, prop, compName, propName, val;
+
+        prop = findTextPropInMGTComponent(clip);
+        if (prop) {
+            return prop;
+        }
+
+        if (!clip || !clip.components) {
+            return null;
+        }
+
+        for (i = 0; i < clip.components.numItems; i++) {
+            comp = clip.components[i];
+            if (!comp) {
+                continue;
+            }
+
+            compName = "";
+            try {
+                compName = String(comp.displayName);
+            } catch (e0) {}
+
+            if (SETTINGS.MOGRT_COMPONENT_NAME_HINTS && !matchesAnyNameHint(compName, SETTINGS.MOGRT_COMPONENT_NAME_HINTS)) {
+                continue;
+            }
+
+            if (!comp.properties) {
+                continue;
+            }
+
+            for (j = 0; j < comp.properties.numItems; j++) {
+                prop = comp.properties[j];
+                if (!prop) {
+                    continue;
+                }
+
+                propName = "";
+                try {
+                    propName = String(prop.displayName);
+                } catch (e1) {}
+
+                if (SETTINGS.TEXT_PROP_NAME_HINT && propName === SETTINGS.TEXT_PROP_NAME_HINT) {
+                    return prop;
+                }
+
+                try {
+                    val = prop.getValue();
+                    if (val !== null && val !== undefined && typeof val === "string" && val.indexOf("textEditValue") !== -1) {
+                        return prop;
+                    }
+                } catch (e2) {}
+            }
+        }
+
+        for (i = 0; i < clip.components.numItems; i++) {
+            comp = clip.components[i];
+            if (!comp || !comp.properties) {
+                continue;
+            }
+
+            for (j = 0; j < comp.properties.numItems; j++) {
+                prop = comp.properties[j];
+                if (!prop) {
+                    continue;
+                }
+
+                try {
+                    val = prop.getValue();
+                    if (val !== null && val !== undefined && typeof val === "string" && val.indexOf("textEditValue") !== -1) {
+                        return prop;
+                    }
+                } catch (e3) {}
+            }
+        }
+
+        return null;
+    }
+
+    function getMGTComponentFromClip(clip) {
+        try {
+            if (!clip || typeof clip.getMGTComponent !== "function") {
+                return null;
+            }
+            return clip.getMGTComponent();
+        } catch (e) {
+            return null;
+        }
+    }
+
+    function findNamedPropInComponent(component, propNameHints) {
+        var i, prop, propName;
+
+        if (!component || !component.properties) {
+            return null;
+        }
+
+        for (i = 0; i < component.properties.numItems; i++) {
+            prop = component.properties[i];
+            if (!prop) {
+                continue;
+            }
+
+            propName = getDisplayNameSafe(prop);
+            if (matchesAnyNameHint(propName, propNameHints)) {
+                return prop;
+            }
+        }
+
+        return null;
+    }
+
+    function findTextPropInMGTComponent(clip) {
+        var component, i, prop, val;
+
+        component = getMGTComponentFromClip(clip);
+        if (!component || !component.properties) {
+            return null;
+        }
+
+        if (SETTINGS.TEXT_PROP_NAME_HINT) {
+            prop = findNamedPropInComponent(component, SETTINGS.TEXT_PROP_NAME_HINT);
+            if (prop) {
+                return prop;
+            }
+        }
+
+        for (i = 0; i < component.properties.numItems; i++) {
+            prop = component.properties[i];
+            if (!prop) {
+                continue;
+            }
+
+            try {
+                val = prop.getValue();
+                if (val !== null && val !== undefined && typeof val === "string" && val.indexOf("textEditValue") !== -1) {
+                    return prop;
+                }
+            } catch (e) {}
+        }
+
+        if (component.properties.numItems === 1) {
+            prop = component.properties[0];
+            if (prop) {
+                try {
+                    val = prop.getValue();
+                    if (typeof val === "string") {
+                        return prop;
+                    }
+                } catch (e2) {}
+            }
+        }
+
+        return null;
+    }
+
+    function setGraphicText(clip, newText) {
+        var prop;
+
+        prop = findTextPropInClip(clip);
+        if (!prop) {
+            return {
+                ok: false,
+                error: "No se encontró la propiedad de texto del MOGRT."
+            };
+        }
+
+        try {
+            prop.setValue(String(newText), 1);
+            return {
+                ok: true
+            };
+        } catch (e) {
+            return {
+                ok: false,
+                error: "setValue falló: " + safeToString(e)
+            };
+        }
+    }
+
+    function setGraphicWordPayload(clip, newText, fontStyle, fontSize) {
+        var prop, raw, numericFontSize;
+
+        prop = findTextPropInClip(clip);
+        if (!prop) {
+            return {
+                ok: false,
+                error: "No se encontró la propiedad 'Word' del MOGRT."
+            };
+        }
+
+        try {
+            raw = safeToString(prop.getValue());
+        } catch (e0) {
+            return {
+                ok: false,
+                error: "getValue falló: " + safeToString(e0)
+            };
+        }
+
+        if (raw && raw.charAt(0) === "{") {
+            raw = replaceSingleValue(raw, "fontEditValue", fontStyle, true);
+
+            numericFontSize = Number(fontSize);
+            if (!isNaN(numericFontSize)) {
+                raw = replaceSingleValue(raw, "fontSizeEditValue", numericFontSize, false);
+                raw = replaceSingleValue(raw, "fontSizeValue", numericFontSize, false);
+            }
+
+            raw = replaceSingleValue(raw, "textEditValue", newText, true);
+            raw = replaceSingleValue(raw, "textValue", newText, true);
+            raw = replaceRunLengths(raw, newText);
+
+            try {
+                prop.setValue(raw, true);
+                return {
+                    ok: true
+                };
+            } catch (e1) {
+                return {
+                    ok: false,
+                    error: "setValue payload falló: " + safeToString(e1)
+                };
+            }
+        }
+
+        return setGraphicText(clip, newText);
+    }
+
+    function isArrayLike(val) {
+        try {
+            return (val && val.length !== undefined);
+        } catch (e) {
+            return false;
+        }
+    }
+
+    function normalizeName(s) {
+        return trimString(safeToString(s)).toLowerCase();
+    }
+
+    function matchesNameHint(value, hint) {
+        if (!trimString(hint)) {
+            return false;
+        }
+        return normalizeName(value) === normalizeName(hint);
+    }
+
+    function matchesAnyNameHint(value, hints) {
+        var i;
+
+        if (!hints) {
+            return false;
+        }
+
+        if (typeof hints === "string") {
+            return matchesNameHint(value, hints);
+        }
+
+        if (!isArrayLike(hints)) {
+            return false;
+        }
+
+        for (i = 0; i < hints.length; i++) {
+            if (matchesNameHint(value, hints[i])) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    function getDisplayNameSafe(obj) {
+        try {
+            return String(obj.displayName);
+        } catch (e) {
+            return "";
+        }
+    }
+
+    function findNamedPropInClip(clip, componentNameHints, propNameHints, fallbackToAnyComponent) {
+        var i, j, comp, prop, compName, propName;
+
+        if (!clip || !clip.components) {
+            return null;
+        }
+
+        if (componentNameHints) {
+            for (i = 0; i < clip.components.numItems; i++) {
+                comp = clip.components[i];
+                if (!comp || !comp.properties) {
+                    continue;
+                }
+
+                compName = getDisplayNameSafe(comp);
+                if (!matchesAnyNameHint(compName, componentNameHints)) {
+                    continue;
+                }
+
+                for (j = 0; j < comp.properties.numItems; j++) {
+                    prop = comp.properties[j];
+                    if (!prop) {
+                        continue;
+                    }
+
+                    propName = getDisplayNameSafe(prop);
+                    if (matchesAnyNameHint(propName, propNameHints)) {
+                        return prop;
+                    }
+                }
+            }
+        }
+
+        if (!fallbackToAnyComponent) {
+            return null;
+        }
+
+        for (i = 0; i < clip.components.numItems; i++) {
+            comp = clip.components[i];
+            if (!comp || !comp.properties) {
+                continue;
+            }
+
+            for (j = 0; j < comp.properties.numItems; j++) {
+                prop = comp.properties[j];
+                if (!prop) {
+                    continue;
+                }
+
+                propName = getDisplayNameSafe(prop);
+                if (matchesAnyNameHint(propName, propNameHints)) {
+                    return prop;
+                }
+            }
+        }
+
+        return null;
+    }
+
+    function getSequenceFrameSize(seq) {
+        var width, height;
+
+        if (!seq) {
+            return null;
+        }
+
+        try {
+            width = Number(seq.frameSizeHorizontal);
+            height = Number(seq.frameSizeVertical);
+        } catch (e) {
+            return null;
+        }
+
+        if (!width || !height || width <= 0 || height <= 0) {
+            return null;
+        }
+
+        return {
+            width: width,
+            height: height
+        };
+    }
+
+    function findPositionPropInClip(clip) {
+        var i, j, comp, prop, compName, propName, val;
+
+        prop = findNamedPropInClip(
+            clip,
+            SETTINGS.EFFECTS_POSITION_COMPONENT_NAME_HINTS,
+            SETTINGS.POSITION_PROP_NAME_HINTS,
+            false
+        );
+
+        if (prop) {
+            try {
+                val = prop.getValue();
+                if (isArrayLike(val) && val.length >= 2) {
+                    return prop;
+                }
+            } catch (e0) {}
+        }
+
+        if (!clip || !clip.components) {
+            return null;
+        }
+
+        for (i = 0; i < clip.components.numItems; i++) {
+            comp = clip.components[i];
+            if (!comp || !comp.properties) {
+                continue;
+            }
+
+            compName = getDisplayNameSafe(comp);
+            if (matchesAnyNameHint(compName, SETTINGS.MOGRT_COMPONENT_NAME_HINTS)) {
+                continue;
+            }
+
+            for (j = 0; j < comp.properties.numItems; j++) {
+                prop = comp.properties[j];
+                if (!prop) {
+                    continue;
+                }
+
+                propName = getDisplayNameSafe(prop);
+                if (!matchesAnyNameHint(propName, SETTINGS.POSITION_PROP_NAME_HINTS)) {
+                    continue;
+                }
+
+                try {
+                    val = prop.getValue();
+                    if (isArrayLike(val) && val.length >= 2) {
+                        return prop;
+                    }
+                } catch (e1) {}
+            }
+        }
+
+        return null;
+    }
+
+    function setGraphicPosition(seq, clip, x, y) {
+        var prop, val, targetX, targetY, frameSize;
+
+        prop = findPositionPropInClip(clip);
+        if (!prop) {
+            return {
+                ok: false,
+                error: "No se encontró la propiedad de posición en Effects Controls."
+            };
+        }
+
+        targetX = (Number(x) * SETTINGS.POSITION_X_SCALE) + SETTINGS.POSITION_X_OFFSET;
+        targetY = (Number(y) * SETTINGS.POSITION_Y_SCALE) + SETTINGS.POSITION_Y_OFFSET;
+
+        if (SETTINGS.POSITION_VALUES_ARE_PIXEL_COORDS) {
+            frameSize = getSequenceFrameSize(seq);
+            if (!frameSize) {
+                return {
+                    ok: false,
+                    error: "No se pudo obtener el tamaño de la secuencia para normalizar Position."
+                };
+            }
+
+            targetX = targetX / frameSize.width;
+            targetY = targetY / frameSize.height;
+        }
+
+        try {
+            val = prop.getValue();
+
+            if (!isArrayLike(val) || val.length < 2) {
+                return {
+                    ok: false,
+                    error: "La propiedad de posición no devolvió un array [x,y]."
+                };
+            }
+
+            val[0] = Number(targetX);
+            val[1] = Number(targetY);
+
+            prop.setValue(val, 1);
+
+            return {
+                ok: true
+            };
+        } catch (e) {
+            return {
+                ok: false,
+                error: "setPosition falló: " + safeToString(e)
+            };
+        }
+    }
+
+    function getMaxWordsPerLayout(items) {
+        var i, maxCount, count;
+        maxCount = 0;
+
+        for (i = 0; i < items.length; i++) {
+            count = 0;
+            try {
+                count = items[i].elements.length;
+            } catch (e) {
+                count = 0;
+            }
+            if (count > maxCount) {
+                maxCount = count;
+            }
+        }
+
+        return maxCount;
+    }
+
+    function tryAddTracksAtTop(qeSeq, neededNewTracks, beforeCount) {
+        var okAdd;
+
+        okAdd = false;
+
+        if (neededNewTracks <= 0) {
+            return true;
+        }
+
+        if (beforeCount > 0) {
+            try {
+                qeSeq.addTracks(neededNewTracks, beforeCount, 0);
+                okAdd = true;
+            } catch (e0) {}
+        }
+
+        if (!okAdd) {
+            try {
+                qeSeq.addTracks(neededNewTracks, beforeCount);
+                okAdd = true;
+            } catch (e1) {}
+        }
+
+        return okAdd;
+    }
+
+    function removeEmptyVideoTracksIfPossible(seq) {
+        var beforeCount, afterCount, qeSeq;
+
+        beforeCount = getVideoTrackCount(seq);
+
+        try {
+            app.enableQE();
+        } catch (e0) {
+            return {
+                ok: false,
+                error: "No se pudo habilitar QE para borrar pistas vacías."
+            };
+        }
+
+        try {
+            qeSeq = qe.project.getActiveSequence();
+        } catch (e1) {
+            qeSeq = null;
+        }
+
+        if (!qeSeq) {
+            return {
+                ok: false,
+                error: "qe.project.getActiveSequence() devolvió null al borrar pistas vacías."
+            };
+        }
+
+        try {
+            qeSeq.removeEmptyVideoTracks();
+        } catch (e2) {
+            return {
+                ok: false,
+                error: "removeEmptyVideoTracks() falló: " + safeToString(e2)
+            };
+        }
+
+        afterCount = getVideoTrackCount(seq);
+
+        return {
+            ok: true,
+            beforeCount: beforeCount,
+            afterCount: afterCount
+        };
+    }
+
+    function ensureTopVideoTracks(seq, neededNewTracks) {
+        var beforeCount, afterCount, qeSeq, tryCount, okAdd, beforeSummary, afterSummary;
+        var highestOccupiedIndex, baseTrackIndex, reusableTopTracks, missingTracks;
+
+        beforeCount = getVideoTrackCount(seq);
+        highestOccupiedIndex = getHighestOccupiedVideoTrackIndex(seq);
+        baseTrackIndex = highestOccupiedIndex + 1;
+        reusableTopTracks = beforeCount - baseTrackIndex;
+        missingTracks = neededNewTracks - reusableTopTracks;
+
+        if (neededNewTracks <= 0) {
+            return {
+                ok: true,
+                baseTrackIndex: baseTrackIndex,
+                beforeCount: beforeCount,
+                afterCount: beforeCount,
+                addedTracks: 0,
+                reusableTopTracks: reusableTopTracks,
+                highestOccupiedIndex: highestOccupiedIndex
+            };
+        }
+
+        if (missingTracks <= 0) {
+            return {
+                ok: true,
+                baseTrackIndex: baseTrackIndex,
+                beforeCount: beforeCount,
+                afterCount: beforeCount,
+                addedTracks: 0,
+                reusableTopTracks: reusableTopTracks,
+                highestOccupiedIndex: highestOccupiedIndex
+            };
+        }
+
+        beforeSummary = getFirstExistingClipSummary(seq);
+
+        try {
+            app.enableQE();
+        } catch (e0) {
+            return {
+                ok: false,
+                error: "No se pudo habilitar QE para crear nuevas pistas."
+            };
+        }
+
+        try {
+            qeSeq = qe.project.getActiveSequence();
+        } catch (e1) {
+            qeSeq = null;
+        }
+
+        if (!qeSeq) {
+            return {
+                ok: false,
+                error: "qe.project.getActiveSequence() devolvió null."
+            };
+        }
+
+        okAdd = tryAddTracksAtTop(qeSeq, missingTracks, beforeCount);
+
+        if (!okAdd) {
+            return {
+                ok: false,
+                error: "No se pudo crear pistas nuevas al final del stack."
+            };
+        }
+
+        afterCount = getVideoTrackCount(seq);
+        tryCount = 0;
+
+        while (afterCount < beforeCount + missingTracks && tryCount < 20) {
+            tryCount++;
+            try {
+                afterCount = getVideoTrackCount(seq);
+            } catch (e2) {
+                break;
+            }
+        }
+
+        if (afterCount < beforeCount + missingTracks) {
+            return {
+                ok: false,
+                error: "QE intentó crear pistas, pero el recuento final no coincide. before=" + beforeCount + " after=" + afterCount + " expected=" + (beforeCount + missingTracks)
+            };
+        }
+
+        afterSummary = getFirstExistingClipSummary(seq);
+
+        if (beforeSummary && afterSummary) {
+            log("Clip de control antes: track=V" + (beforeSummary.trackIndex + 1) + " name=" + beforeSummary.name + " start=" + beforeSummary.start);
+            log("Clip de control después: track=V" + (afterSummary.trackIndex + 1) + " name=" + afterSummary.name + " start=" + afterSummary.start);
+
+            if (beforeSummary.trackIndex !== afterSummary.trackIndex) {
+                return {
+                    ok: false,
+                    error: "Premiere insertó pistas por debajo del material existente y desplazó clips. Deshaz la operación y vuelve a ejecutar."
+                };
+            }
+        }
+
+        return {
+            ok: true,
+            baseTrackIndex: baseTrackIndex,
+            beforeCount: beforeCount,
+            afterCount: afterCount,
+            addedTracks: missingTracks,
+            reusableTopTracks: reusableTopTracks,
+            highestOccupiedIndex: highestOccupiedIndex
+        };
+    }
+
+    function buildWordUnitsFromLayouts(items, timingWords) {
+        var out, i, j, layout, el, totalDur, eachDur, startSec, visibleDur, timingWord, timingWordIndex;
+        out = [];
+        timingWordIndex = 0;
+
+        for (i = 0; i < items.length; i++) {
+            layout = items[i];
+
+            if (!layout.elements || !layout.elements.length) {
+                continue;
+            }
+
+            totalDur = Number(layout.endSeconds) - Number(layout.startSeconds);
+            if (totalDur <= 0) {
+                totalDur = layout.elements.length * 0.2;
+            }
+
+            eachDur = totalDur / layout.elements.length;
+
+            for (j = 0; j < layout.elements.length; j++) {
+                el = layout.elements[j];
+                startSec = Number(layout.startSeconds) + (j * eachDur);
+
+                if (timingWords && timingWordIndex < timingWords.length) {
+                    timingWord = timingWords[timingWordIndex];
+                    if (wordsMatch(el.text, timingWord.text)) {
+                        startSec = Number(timingWord.startSeconds);
+                    } else {
+                        log("TIMING WARN palabra " + timingWordIndex + ": layout='" + el.text + "' timing='" + timingWord.text + "'. Se usa timing del layout.");
+                    }
+                    timingWordIndex++;
+                }
+
+                visibleDur = Number(layout.endSeconds) - startSec;
+                if (visibleDur <= 0) {
+                    visibleDur = eachDur;
+                }
+
+                out.push({
+                    phraseIndex: i,
+                    wordIndex: j,
+                    wordCount: layout.elements.length,
+
+                    phraseText: safeToString(layout.phrase),
+                    text: safeToString(el.text),
+
+                    startSeconds: startSec,
+                    endSeconds: Number(layout.endSeconds),
+                    visibleDurationSeconds: visibleDur,
+
+                    x: Number(el.x),
+                    y: Number(el.y),
+                    width: Number(el.width),
+                    height: Number(el.height),
+
+                    fill: safeToString(el.fill),
+                    opacity: Number(el.opacity),
+                    fontFamily: safeToString(el.fontFamily),
+                    fontSize: Number(el.fontSize),
+                    fontWeight: Number(el.fontWeight),
+                    rotation: Number(el.rotation)
+                });
+            }
+        }
+
+        return out;
+    }
+
+    function validateSettings() {
+        if (!SETTINGS.MOGRT_PATH || SETTINGS.MOGRT_PATH.indexOf(".mogrt") === -1) {
+            return "MOGRT_PATH inválido.";
+        }
+
+        if (!SETTINGS.JSON_PATH || SETTINGS.JSON_PATH.indexOf(".json") === -1) {
+            return "JSON_PATH inválido.";
+        }
+
+        if (!SETTINGS.WORD_TIMINGS_JSON_PATH || SETTINGS.WORD_TIMINGS_JSON_PATH.indexOf(".json") === -1) {
+            return "WORD_TIMINGS_JSON_PATH inválido.";
+        }
+
+        return "";
+    }
+
+    function run() {
+        var settingsError, seq, readResult, items, maxWords, ensureTracksResult, baseTrackIndex, highestTrackLabel, detectedFPS;
+        var mogrtFile, created, i, unit, importResult, textResult, positionResult, wordUnits, frameSize, cleanupResult;
+        var timingsReadResult, timingWords;
+
+        log("======================================");
+        log("INICIO mogrt_from_layout_json");
+        log("======================================");
+
+        settingsError = validateSettings();
+        if (settingsError) {
+            return fail(settingsError);
+        }
+
+        seq = getSequence();
+        if (!seq) {
+            return fail("No hay secuencia activa.");
+        }
+
+        detectedFPS = getSequenceFPS(seq);
+        if (!detectedFPS || detectedFPS <= 0) {
+            return fail("No se pudo detectar el FPS de la secuencia activa.");
+        }
+
+        mogrtFile = new File(SETTINGS.MOGRT_PATH);
+        if (!mogrtFile.exists) {
+            return fail("No existe el MOGRT: " + SETTINGS.MOGRT_PATH);
+        }
+
+        readResult = readTextFile(SETTINGS.JSON_PATH);
+        if (!readResult.ok) {
+            return fail(readResult.error);
+        }
+
+        timingsReadResult = readTextFile(SETTINGS.WORD_TIMINGS_JSON_PATH);
+        if (!timingsReadResult.ok) {
+            return fail(timingsReadResult.error);
+        }
+
+        items = parseLayoutJSON(readResult.content, detectedFPS);
+        if (!items || !items.length) {
+            return fail("No se encontraron layouts válidos en el JSON.");
+        }
+
+        timingWords = parseWordTimingsJSON(timingsReadResult.content);
+        if (!timingWords || !timingWords.length) {
+            return fail("No se encontraron words válidas en el JSON de timings.");
+        }
+
+        maxWords = getMaxWordsPerLayout(items);
+        if (maxWords < 1) {
+            return fail("No se detectaron elements válidos.");
+        }
+
+        log("Secuencia activa: " + safeToString(seq.name));
+        log("FPS detectado para parsear timecode: " + detectedFPS);
+        log("Pistas de vídeo actuales: " + getVideoTrackCount(seq));
+        frameSize = getSequenceFrameSize(seq);
+        if (frameSize) {
+            log("Tamaño de secuencia: " + frameSize.width + "x" + frameSize.height);
+        }
+        log("Layouts parseados: " + items.length);
+        log("Words parseadas desde timings JSON: " + timingWords.length);
+        log("Máximo de palabras en un layout: " + maxWords);
+
+        cleanupResult = removeEmptyVideoTracksIfPossible(seq);
+        if (!cleanupResult.ok) {
+            return fail(cleanupResult.error);
+        }
+
+        log("Pistas vacías eliminadas antes de importar: before=" + cleanupResult.beforeCount + " after=" + cleanupResult.afterCount);
+
+        ensureTracksResult = ensureTopVideoTracks(seq, maxWords);
+        if (!ensureTracksResult.ok) {
+            return fail(ensureTracksResult.error);
+        }
+
+        baseTrackIndex = ensureTracksResult.baseTrackIndex;
+        highestTrackLabel = "ninguna";
+        if (ensureTracksResult.highestOccupiedIndex >= 0) {
+            highestTrackLabel = "V" + (ensureTracksResult.highestOccupiedIndex + 1);
+        }
+
+        log("Pistas antes: " + ensureTracksResult.beforeCount);
+        log("Pistas después: " + ensureTracksResult.afterCount);
+        log("Pista ocupada más alta antes de crear: " + highestTrackLabel);
+        log("Pistas vacías reutilizables arriba: " + ensureTracksResult.reusableTopTracks);
+        log("Pistas nuevas añadidas arriba: " + ensureTracksResult.addedTracks);
+        log("Bloque nuevo de pistas empieza en: V" + (baseTrackIndex + 1));
+
+        wordUnits = buildWordUnitsFromLayouts(items, timingWords);
+        created = 0;
+
+        for (i = 0; i < wordUnits.length; i++) {
+            unit = wordUnits[i];
+            importResult = importMogrt(seq, SETTINGS.MOGRT_PATH, unit.startSeconds, baseTrackIndex + unit.wordIndex);
+            if (!importResult.ok) {
+                log("--------------------------------------");
+                log("IMPORT ERROR en layout " + unit.phraseIndex + " palabra " + unit.wordIndex + ": " + importResult.error);
+                continue;
+            }
+
+            moveClipIfPossible(importResult.clip, unit.startSeconds);
+            if (!setClipVisibleDurationIfPossible(importResult.clip, unit.visibleDurationSeconds)) {
+                setClipEndIfPossible(importResult.clip, unit.endSeconds);
+            }
+
+            textResult = setGraphicWordPayload(
+                importResult.clip,
+                unit.text,
+                SETTINGS.APPLY_FONT_STYLE ? unit.fontFamily : "",
+                SETTINGS.APPLY_FONT_SIZE ? unit.fontSize : undefined
+            );
+            if (!textResult.ok) {
+                log("--------------------------------------");
+                log("WORD PAYLOAD ERROR en layout " + unit.phraseIndex + " palabra " + unit.wordIndex + ": " + textResult.error);
+                continue;
+            }
+
+            if (SETTINGS.APPLY_POSITION) {
+                positionResult = setGraphicPosition(seq, importResult.clip, unit.x, unit.y);
+                if (!positionResult.ok) {
+                    log("--------------------------------------");
+                    log("POSITION WARN en layout " + unit.phraseIndex + " palabra " + unit.wordIndex + ": " + positionResult.error);
+                }
+            }
+
+            created++;
+
+            log("--------------------------------------");
+            log("CREATED OK");
+            log("layout=" + unit.phraseIndex);
+            log("track=V" + (baseTrackIndex + unit.wordIndex + 1));
+            log("text=" + unit.text);
+            log("phrase=" + unit.phraseText);
+            log("startSeconds=" + unit.startSeconds + " | endSeconds=" + unit.endSeconds);
+            log("fontFamily=" + unit.fontFamily + " | fontSize=" + unit.fontSize);
+            log("x=" + unit.x + " | y=" + unit.y);
+        }
+
+        log("======================================");
+        log("FIN mogrt_from_layout_json");
+        log("======================================");
+
+        return ok("Instancias creadas: " + created + " / " + wordUnits.length);
+    }
+
+    return run();
+}());

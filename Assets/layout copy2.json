@@ -1,0 +1,1353 @@
+{
+  "layouts" : [
+    {
+      "background" : "#E7E7E7",
+      "elements" : [
+        {
+          "fill" : "#111111",
+          "fontFamily" : "Montserrat-Black",
+          "fontSize" : 124.23829656116119,
+          "fontWeight" : 650,
+          "height" : 154,
+          "opacity" : 1,
+          "rotation" : 0,
+          "text" : "If",
+          "width" : 99,
+          "x" : 697.26,
+          "y" : 129.6
+        },
+        {
+          "fill" : "#111111",
+          "fontFamily" : "Montserrat-Black",
+          "fontSize" : 124.23829656116119,
+          "fontWeight" : 650,
+          "height" : 154,
+          "opacity" : 1,
+          "rotation" : 0,
+          "text" : "you're",
+          "width" : 420,
+          "x" : 802.74,
+          "y" : 129.6
+        },
+        {
+          "fill" : "#111111",
+          "fontFamily" : "AppleGaramond-Italic",
+          "fontSize" : 167.81764614995535,
+          "fontWeight" : 700,
+          "height" : 194,
+          "opacity" : 1,
+          "rotation" : 0,
+          "text" : "letting",
+          "width" : 388,
+          "x" : 834.74,
+          "y" : 255.76
+        }
+      ],
+      "fonts" : {
+        "accentFamily" : "AppleGaramond-Italic",
+        "primaryFamily" : "Montserrat-Black"
+      },
+      "phrase" : "If you're letting",
+      "timecode" : "00:00:00:03 - 00:00:00:17"
+    },
+    {
+      "background" : "#E7E7E7",
+      "elements" : [
+        {
+          "fill" : "#111111",
+          "fontFamily" : "Montserrat-Black",
+          "fontSize" : 185.18607552294083,
+          "fontWeight" : 700,
+          "height" : 228,
+          "opacity" : 1,
+          "rotation" : 0,
+          "text" : "tankers",
+          "width" : 773,
+          "x" : 332.76,
+          "y" : 129.6
+        },
+        {
+          "fill" : "#111111",
+          "fontFamily" : "AppleGaramond-Italic",
+          "fontSize" : 185.18607552294083,
+          "fontWeight" : 700,
+          "height" : 228,
+          "opacity" : 1,
+          "rotation" : 0,
+          "text" : "doesn't",
+          "width" : 475,
+          "x" : 1112.24,
+          "y" : 129.6
+        }
+      ],
+      "fonts" : {
+        "accentFamily" : "AppleGaramond-Italic",
+        "primaryFamily" : "Montserrat-Black"
+      },
+      "phrase" : "tankers doesn't",
+      "timecode" : "00:00:00:17 - 00:00:01:07"
+    },
+    {
+      "background" : "#E7E7E7",
+      "elements" : [
+        {
+          "fill" : "#111111",
+          "fontFamily" : "Montserrat-Black",
+          "fontSize" : 123.69295333829703,
+          "fontWeight" : 650,
+          "height" : 153,
+          "opacity" : 1,
+          "rotation" : 0,
+          "text" : "move",
+          "width" : 373,
+          "x" : 645.76,
+          "y" : 129.6
+        },
+        {
+          "fill" : "#111111",
+          "fontFamily" : "Montserrat-Black",
+          "fontSize" : 123.69295333829703,
+          "fontWeight" : 650,
+          "height" : 153,
+          "opacity" : 1,
+          "rotation" : 0,
+          "text" : "like",
+          "width" : 249,
+          "x" : 1025.24,
+          "y" : 129.6
+        },
+        {
+          "fill" : "#111111",
+          "fontFamily" : "AppleGaramond-Italic",
+          "fontSize" : 163.57799418801554,
+          "fontWeight" : 700,
+          "height" : 189,
+          "opacity" : 1,
+          "rotation" : 0,
+          "text" : "this,",
+          "width" : 252,
+          "x" : 844.76,
+          "y" : 254.76
+        },
+        {
+          "fill" : "#111111",
+          "fontFamily" : "AppleGaramond-Italic",
+          "fontSize" : 163.57799418801554,
+          "fontWeight" : 700,
+          "height" : 189,
+          "opacity" : 1,
+          "rotation" : 0,
+          "text" : "it's",
+          "width" : 171,
+          "x" : 1103.24,
+          "y" : 254.76
+        }
+      ],
+      "fonts" : {
+        "accentFamily" : "AppleGaramond-Italic",
+        "primaryFamily" : "Montserrat-Black"
+      },
+      "phrase" : "move like this, it's",
+      "timecode" : "00:00:01:07 - 00:00:02:12"
+    },
+    {
+      "background" : "#E7E7E7",
+      "elements" : [
+        {
+          "fill" : "#111111",
+          "fontFamily" : "Montserrat-Black",
+          "fontSize" : 126.20668172686494,
+          "fontWeight" : 650,
+          "height" : 156,
+          "opacity" : 1,
+          "rotation" : 0,
+          "text" : "because",
+          "width" : 573,
+          "x" : 599.26,
+          "y" : 129.6
+        },
+        {
+          "fill" : "#111111",
+          "fontFamily" : "Montserrat-Black",
+          "fontSize" : 126.20668172686494,
+          "fontWeight" : 650,
+          "height" : 156,
+          "opacity" : 1,
+          "rotation" : 0,
+          "text" : "of",
+          "width" : 142,
+          "x" : 1178.74,
+          "y" : 129.6
+        },
+        {
+          "fill" : "#111111",
+          "fontFamily" : "AppleGaramond-Italic",
+          "fontSize" : 168.1572917140173,
+          "fontWeight" : 700,
+          "height" : 194,
+          "opacity" : 1,
+          "rotation" : 0,
+          "text" : "your",
+          "width" : 283,
+          "x" : 656.26,
+          "y" : 257.76
+        },
+        {
+          "fill" : "#111111",
+          "fontFamily" : "AppleGaramond-Italic",
+          "fontSize" : 168.1572917140173,
+          "fontWeight" : 700,
+          "height" : 194,
+          "opacity" : 1,
+          "rotation" : 0,
+          "text" : "sound",
+          "width" : 375,
+          "x" : 945.74,
+          "y" : 257.76
+        }
+      ],
+      "fonts" : {
+        "accentFamily" : "AppleGaramond-Italic",
+        "primaryFamily" : "Montserrat-Black"
+      },
+      "phrase" : "because of your sound",
+      "timecode" : "00:00:02:12 - 00:00:04:08"
+    },
+    {
+      "background" : "#E7E7E7",
+      "elements" : [
+        {
+          "fill" : "#111111",
+          "fontFamily" : "Montserrat-Black",
+          "fontSize" : 123.14761011543285,
+          "fontWeight" : 650,
+          "height" : 153,
+          "opacity" : 1,
+          "rotation" : 0,
+          "text" : "If",
+          "width" : 98,
+          "x" : 582.76,
+          "y" : 129.6
+        },
+        {
+          "fill" : "#111111",
+          "fontFamily" : "Montserrat-Black",
+          "fontSize" : 123.14761011543285,
+          "fontWeight" : 650,
+          "height" : 153,
+          "opacity" : 1,
+          "rotation" : 0,
+          "text" : "you're",
+          "width" : 417,
+          "x" : 687.24,
+          "y" : 129.6
+        },
+        {
+          "fill" : "#111111",
+          "fontFamily" : "AppleGaramond-Italic",
+          "fontSize" : 165.2197892400191,
+          "fontWeight" : 700,
+          "height" : 191,
+          "opacity" : 1,
+          "rotation" : 0,
+          "text" : "Latino,",
+          "width" : 427,
+          "x" : 582.76,
+          "y" : 254.76
+        },
+        {
+          "fill" : "#111111",
+          "fontFamily" : "AppleGaramond-Italic",
+          "fontSize" : 165.2197892400191,
+          "fontWeight" : 700,
+          "height" : 191,
+          "opacity" : 1,
+          "rotation" : 0,
+          "text" : "Texas",
+          "width" : 321,
+          "x" : 1016.24,
+          "y" : 254.76
+        }
+      ],
+      "fonts" : {
+        "accentFamily" : "AppleGaramond-Italic",
+        "primaryFamily" : "Montserrat-Black"
+      },
+      "phrase" : "If you're Latino, Texas",
+      "timecode" : "00:00:04:08 - 00:00:05:09"
+    },
+    {
+      "background" : "#E7E7E7",
+      "elements" : [
+        {
+          "fill" : "#111111",
+          "fontFamily" : "Montserrat-Black",
+          "fontSize" : 125.66133850400075,
+          "fontWeight" : 650,
+          "height" : 156,
+          "opacity" : 1,
+          "rotation" : 0,
+          "text" : "doesn't",
+          "width" : 507,
+          "x" : 513.76,
+          "y" : 129.6
+        },
+        {
+          "fill" : "#111111",
+          "fontFamily" : "Montserrat-Black",
+          "fontSize" : 125.66133850400075,
+          "fontWeight" : 650,
+          "height" : 156,
+          "opacity" : 1,
+          "rotation" : 0,
+          "text" : "move",
+          "width" : 379,
+          "x" : 1027.24,
+          "y" : 129.6
+        },
+        {
+          "fill" : "#111111",
+          "fontFamily" : "AppleGaramond-Italic",
+          "fontSize" : 169.7990867660209,
+          "fontWeight" : 700,
+          "height" : 196,
+          "opacity" : 1,
+          "rotation" : 0,
+          "text" : "like",
+          "width" : 227,
+          "x" : 947.76,
+          "y" : 257.76
+        },
+        {
+          "fill" : "#111111",
+          "fontFamily" : "AppleGaramond-Italic",
+          "fontSize" : 169.7990867660209,
+          "fontWeight" : 700,
+          "height" : 196,
+          "opacity" : 1,
+          "rotation" : 0,
+          "text" : "this",
+          "width" : 225,
+          "x" : 1181.24,
+          "y" : 257.76
+        }
+      ],
+      "fonts" : {
+        "accentFamily" : "AppleGaramond-Italic",
+        "primaryFamily" : "Montserrat-Black"
+      },
+      "phrase" : "doesn't move like this",
+      "timecode" : "00:00:05:09 - 00:00:06:12"
+    },
+    {
+      "background" : "#E7E7E7",
+      "elements" : [
+        {
+          "fill" : "#111111",
+          "fontFamily" : "Montserrat-Black",
+          "fontSize" : 101.6283179109384,
+          "fontWeight" : 650,
+          "height" : 126,
+          "opacity" : 1,
+          "rotation" : 0,
+          "text" : "It's",
+          "width" : 168,
+          "x" : 581.02,
+          "y" : 129.6
+        },
+        {
+          "fill" : "#111111",
+          "fontFamily" : "Montserrat-Black",
+          "fontSize" : 101.6283179109384,
+          "fontWeight" : 650,
+          "height" : 126,
+          "opacity" : 1,
+          "rotation" : 0,
+          "text" : "because",
+          "width" : 462,
+          "x" : 755.5,
+          "y" : 129.6
+        },
+        {
+          "fill" : "#111111",
+          "fontFamily" : "Montserrat-Black",
+          "fontSize" : 101.6283179109384,
+          "fontWeight" : 650,
+          "height" : 126,
+          "opacity" : 1,
+          "rotation" : 0,
+          "text" : "of",
+          "width" : 115,
+          "x" : 1223.98,
+          "y" : 129.6
+        },
+        {
+          "fill" : "#111111",
+          "fontFamily" : "AppleGaramond-Italic",
+          "fontSize" : 138.1307565688923,
+          "fontWeight" : 700,
+          "height" : 160,
+          "opacity" : 1,
+          "rotation" : 0,
+          "text" : "your",
+          "width" : 233,
+          "x" : 791.5,
+          "y" : 227.76
+        },
+        {
+          "fill" : "#111111",
+          "fontFamily" : "AppleGaramond-Italic",
+          "fontSize" : 138.1307565688923,
+          "fontWeight" : 700,
+          "height" : 160,
+          "opacity" : 1,
+          "rotation" : 0,
+          "text" : "sound",
+          "width" : 308,
+          "x" : 1030.98,
+          "y" : 227.76
+        }
+      ],
+      "fonts" : {
+        "accentFamily" : "AppleGaramond-Italic",
+        "primaryFamily" : "Montserrat-Black"
+      },
+      "phrase" : "It's because of your sound",
+      "timecode" : "00:00:06:12 - 00:00:09:07"
+    },
+    {
+      "background" : "#E7E7E7",
+      "elements" : [
+        {
+          "fill" : "#111111",
+          "fontFamily" : "Montserrat-Black",
+          "fontSize" : 125.11599528113662,
+          "fontWeight" : 650,
+          "height" : 155,
+          "opacity" : 1,
+          "rotation" : 0,
+          "text" : "If",
+          "width" : 100,
+          "x" : 568.76,
+          "y" : 129.6
+        },
+        {
+          "fill" : "#111111",
+          "fontFamily" : "Montserrat-Black",
+          "fontSize" : 125.11599528113662,
+          "fontWeight" : 650,
+          "height" : 155,
+          "opacity" : 1,
+          "rotation" : 0,
+          "text" : "you're",
+          "width" : 423,
+          "x" : 675.24,
+          "y" : 129.6
+        },
+        {
+          "fill" : "#111111",
+          "fontFamily" : "AppleGaramond-Italic",
+          "fontSize" : 171.44088181802445,
+          "fontWeight" : 700,
+          "height" : 198,
+          "opacity" : 1,
+          "rotation" : 0,
+          "text" : "Latino,",
+          "width" : 443,
+          "x" : 568.76,
+          "y" : 256.76
+        },
+        {
+          "fill" : "#111111",
+          "fontFamily" : "AppleGaramond-Italic",
+          "fontSize" : 171.44088181802445,
+          "fontWeight" : 700,
+          "height" : 198,
+          "opacity" : 1,
+          "rotation" : 0,
+          "text" : "Texas",
+          "width" : 333,
+          "x" : 1018.24,
+          "y" : 256.76
+        }
+      ],
+      "fonts" : {
+        "accentFamily" : "AppleGaramond-Italic",
+        "primaryFamily" : "Montserrat-Black"
+      },
+      "phrase" : "If you're Latino, Texas",
+      "timecode" : "00:00:09:14 - 00:00:10:14"
+    },
+    {
+      "background" : "#E7E7E7",
+      "elements" : [
+        {
+          "fill" : "#111111",
+          "fontFamily" : "Montserrat-Black",
+          "fontSize" : 122.05692366970452,
+          "fontWeight" : 650,
+          "height" : 151,
+          "opacity" : 1,
+          "rotation" : 0,
+          "text" : "doesn't",
+          "width" : 493,
+          "x" : 526.26,
+          "y" : 129.6
+        },
+        {
+          "fill" : "#111111",
+          "fontFamily" : "Montserrat-Black",
+          "fontSize" : 122.05692366970452,
+          "fontWeight" : 650,
+          "height" : 151,
+          "opacity" : 1,
+          "rotation" : 0,
+          "text" : "move",
+          "width" : 368,
+          "x" : 1025.74,
+          "y" : 129.6
+        },
+        {
+          "fill" : "#111111",
+          "fontFamily" : "AppleGaramond-Italic",
+          "fontSize" : 168.50337934402623,
+          "fontWeight" : 700,
+          "height" : 195,
+          "opacity" : 1,
+          "rotation" : 0,
+          "text" : "like",
+          "width" : 225,
+          "x" : 939.26,
+          "y" : 252.76
+        },
+        {
+          "fill" : "#111111",
+          "fontFamily" : "AppleGaramond-Italic",
+          "fontSize" : 168.50337934402623,
+          "fontWeight" : 700,
+          "height" : 195,
+          "opacity" : 1,
+          "rotation" : 0,
+          "text" : "this",
+          "width" : 223,
+          "x" : 1170.74,
+          "y" : 252.76
+        }
+      ],
+      "fonts" : {
+        "accentFamily" : "AppleGaramond-Italic",
+        "primaryFamily" : "Montserrat-Black"
+      },
+      "phrase" : "doesn't move like this",
+      "timecode" : "00:00:10:14 - 00:00:12:15"
+    },
+    {
+      "background" : "#E7E7E7",
+      "elements" : [
+        {
+          "fill" : "#111111",
+          "fontFamily" : "Montserrat-Black",
+          "fontSize" : 124.57065205827242,
+          "fontWeight" : 650,
+          "height" : 154,
+          "opacity" : 1,
+          "rotation" : 0,
+          "text" : "If",
+          "width" : 99,
+          "x" : 565.26,
+          "y" : 129.6
+        },
+        {
+          "fill" : "#111111",
+          "fontFamily" : "Montserrat-Black",
+          "fontSize" : 124.57065205827242,
+          "fontWeight" : 650,
+          "height" : 154,
+          "opacity" : 1,
+          "rotation" : 0,
+          "text" : "you're",
+          "width" : 421,
+          "x" : 670.74,
+          "y" : 129.6
+        },
+        {
+          "fill" : "#111111",
+          "fontFamily" : "AppleGaramond-Italic",
+          "fontSize" : 173.08267687002805,
+          "fontWeight" : 700,
+          "height" : 200,
+          "opacity" : 1,
+          "rotation" : 0,
+          "text" : "Latino,",
+          "width" : 447,
+          "x" : 565.26,
+          "y" : 255.76
+        },
+        {
+          "fill" : "#111111",
+          "fontFamily" : "AppleGaramond-Italic",
+          "fontSize" : 173.08267687002805,
+          "fontWeight" : 700,
+          "height" : 200,
+          "opacity" : 1,
+          "rotation" : 0,
+          "text" : "Texas",
+          "width" : 336,
+          "x" : 1018.74,
+          "y" : 255.76
+        }
+      ],
+      "fonts" : {
+        "accentFamily" : "AppleGaramond-Italic",
+        "primaryFamily" : "Montserrat-Black"
+      },
+      "phrase" : "If you're Latino, Texas",
+      "timecode" : "00:00:12:15 - 00:00:13:15"
+    },
+    {
+      "background" : "#E7E7E7",
+      "elements" : [
+        {
+          "fill" : "#111111",
+          "fontFamily" : "Montserrat-Black",
+          "fontSize" : 121.51158044684036,
+          "fontWeight" : 650,
+          "height" : 151,
+          "opacity" : 1,
+          "rotation" : 0,
+          "text" : "doesn't",
+          "width" : 491,
+          "x" : 528.26,
+          "y" : 129.6
+        },
+        {
+          "fill" : "#111111",
+          "fontFamily" : "Montserrat-Black",
+          "fontSize" : 121.51158044684036,
+          "fontWeight" : 650,
+          "height" : 151,
+          "opacity" : 1,
+          "rotation" : 0,
+          "text" : "move",
+          "width" : 366,
+          "x" : 1025.74,
+          "y" : 129.6
+        },
+        {
+          "fill" : "#111111",
+          "fontFamily" : "AppleGaramond-Italic",
+          "fontSize" : 170.1451743960298,
+          "fontWeight" : 700,
+          "height" : 196,
+          "opacity" : 1,
+          "rotation" : 0,
+          "text" : "like",
+          "width" : 227,
+          "x" : 933.26,
+          "y" : 252.76
+        },
+        {
+          "fill" : "#111111",
+          "fontFamily" : "AppleGaramond-Italic",
+          "fontSize" : 170.1451743960298,
+          "fontWeight" : 700,
+          "height" : 196,
+          "opacity" : 1,
+          "rotation" : 0,
+          "text" : "this",
+          "width" : 225,
+          "x" : 1166.74,
+          "y" : 252.76
+        }
+      ],
+      "fonts" : {
+        "accentFamily" : "AppleGaramond-Italic",
+        "primaryFamily" : "Montserrat-Black"
+      },
+      "phrase" : "doesn't move like this",
+      "timecode" : "00:00:13:15 - 00:00:14:13"
+    },
+    {
+      "background" : "#E7E7E7",
+      "elements" : [
+        {
+          "fill" : "#111111",
+          "fontFamily" : "Montserrat-Black",
+          "fontSize" : 100.84875953431248,
+          "fontWeight" : 650,
+          "height" : 125,
+          "opacity" : 1,
+          "rotation" : 0,
+          "text" : "It's",
+          "width" : 167,
+          "x" : 583.52,
+          "y" : 129.6
+        },
+        {
+          "fill" : "#111111",
+          "fontFamily" : "Montserrat-Black",
+          "fontSize" : 100.84875953431248,
+          "fontWeight" : 650,
+          "height" : 125,
+          "opacity" : 1,
+          "rotation" : 0,
+          "text" : "because",
+          "width" : 459,
+          "x" : 757,
+          "y" : 129.6
+        },
+        {
+          "fill" : "#111111",
+          "fontFamily" : "Montserrat-Black",
+          "fontSize" : 100.84875953431248,
+          "fontWeight" : 650,
+          "height" : 125,
+          "opacity" : 1,
+          "rotation" : 0,
+          "text" : "of",
+          "width" : 114,
+          "x" : 1222.48,
+          "y" : 129.6
+        },
+        {
+          "fill" : "#111111",
+          "fontFamily" : "AppleGaramond-Italic",
+          "fontSize" : 133.94886112754273,
+          "fontWeight" : 700,
+          "height" : 155,
+          "opacity" : 1,
+          "rotation" : 0,
+          "text" : "your",
+          "width" : 226,
+          "x" : 851,
+          "y" : 226.76
+        },
+        {
+          "fill" : "#111111",
+          "fontFamily" : "AppleGaramond-Italic",
+          "fontSize" : 133.94886112754273,
+          "fontWeight" : 700,
+          "height" : 155,
+          "opacity" : 1,
+          "rotation" : 0,
+          "text" : "sense",
+          "width" : 253,
+          "x" : 1083.48,
+          "y" : 226.76
+        }
+      ],
+      "fonts" : {
+        "accentFamily" : "AppleGaramond-Italic",
+        "primaryFamily" : "Montserrat-Black"
+      },
+      "phrase" : "It's because of your sense",
+      "timecode" : "00:00:14:13 - 00:00:17:08"
+    },
+    {
+      "background" : "#E7E7E7",
+      "elements" : [
+        {
+          "fill" : "#111111",
+          "fontFamily" : "Montserrat-Black",
+          "fontSize" : 120.96623722397617,
+          "fontWeight" : 650,
+          "height" : 150,
+          "opacity" : 1,
+          "rotation" : 0,
+          "text" : "If",
+          "width" : 96,
+          "x" : 585.26,
+          "y" : 129.6
+        },
+        {
+          "fill" : "#111111",
+          "fontFamily" : "Montserrat-Black",
+          "fontSize" : 120.96623722397617,
+          "fontWeight" : 650,
+          "height" : 150,
+          "opacity" : 1,
+          "rotation" : 0,
+          "text" : "you're",
+          "width" : 409,
+          "x" : 687.74,
+          "y" : 129.6
+        },
+        {
+          "fill" : "#111111",
+          "fontFamily" : "AppleGaramond-Italic",
+          "fontSize" : 164.27016944803339,
+          "fontWeight" : 700,
+          "height" : 190,
+          "opacity" : 1,
+          "rotation" : 0,
+          "text" : "Latino,",
+          "width" : 424,
+          "x" : 585.26,
+          "y" : 251.76
+        },
+        {
+          "fill" : "#111111",
+          "fontFamily" : "AppleGaramond-Italic",
+          "fontSize" : 164.27016944803339,
+          "fontWeight" : 700,
+          "height" : 190,
+          "opacity" : 1,
+          "rotation" : 0,
+          "text" : "Texas",
+          "width" : 319,
+          "x" : 1015.74,
+          "y" : 251.76
+        }
+      ],
+      "fonts" : {
+        "accentFamily" : "AppleGaramond-Italic",
+        "primaryFamily" : "Montserrat-Black"
+      },
+      "phrase" : "If you're Latino, Texas",
+      "timecode" : "00:00:18:12 - 00:00:19:12"
+    },
+    {
+      "background" : "#E7E7E7",
+      "elements" : [
+        {
+          "fill" : "#111111",
+          "fontFamily" : "Montserrat-Black",
+          "fontSize" : 123.47996561254408,
+          "fontWeight" : 650,
+          "height" : 153,
+          "opacity" : 1,
+          "rotation" : 0,
+          "text" : "doesn't",
+          "width" : 499,
+          "x" : 521.26,
+          "y" : 129.6
+        },
+        {
+          "fill" : "#111111",
+          "fontFamily" : "Montserrat-Black",
+          "fontSize" : 123.47996561254408,
+          "fontWeight" : 650,
+          "height" : 153,
+          "opacity" : 1,
+          "rotation" : 0,
+          "text" : "move",
+          "width" : 372,
+          "x" : 1026.74,
+          "y" : 129.6
+        },
+        {
+          "fill" : "#111111",
+          "fontFamily" : "AppleGaramond-Italic",
+          "fontSize" : 168.84946697403515,
+          "fontWeight" : 700,
+          "height" : 195,
+          "opacity" : 1,
+          "rotation" : 0,
+          "text" : "like",
+          "width" : 225,
+          "x" : 944.26,
+          "y" : 254.76
+        },
+        {
+          "fill" : "#111111",
+          "fontFamily" : "AppleGaramond-Italic",
+          "fontSize" : 168.84946697403515,
+          "fontWeight" : 700,
+          "height" : 195,
+          "opacity" : 1,
+          "rotation" : 0,
+          "text" : "this",
+          "width" : 223,
+          "x" : 1175.74,
+          "y" : 254.76
+        }
+      ],
+      "fonts" : {
+        "accentFamily" : "AppleGaramond-Italic",
+        "primaryFamily" : "Montserrat-Black"
+      },
+      "phrase" : "doesn't move like this",
+      "timecode" : "00:00:19:12 - 00:00:20:10"
+    },
+    {
+      "background" : "#E7E7E7",
+      "elements" : [
+        {
+          "fill" : "#111111",
+          "fontFamily" : "Montserrat-Black",
+          "fontSize" : 97.4088645083369,
+          "fontWeight" : 650,
+          "height" : 121,
+          "opacity" : 1,
+          "rotation" : 0,
+          "text" : "It's",
+          "width" : 161,
+          "x" : 596.52,
+          "y" : 129.6
+        },
+        {
+          "fill" : "#111111",
+          "fontFamily" : "Montserrat-Black",
+          "fontSize" : 97.4088645083369,
+          "fontWeight" : 650,
+          "height" : 121,
+          "opacity" : 1,
+          "rotation" : 0,
+          "text" : "because",
+          "width" : 443,
+          "x" : 764,
+          "y" : 129.6
+        },
+        {
+          "fill" : "#111111",
+          "fontFamily" : "Montserrat-Black",
+          "fontSize" : 97.4088645083369,
+          "fontWeight" : 650,
+          "height" : 121,
+          "opacity" : 1,
+          "rotation" : 0,
+          "text" : "of",
+          "width" : 110,
+          "x" : 1213.48,
+          "y" : 129.6
+        },
+        {
+          "fill" : "#111111",
+          "fontFamily" : "AppleGaramond-Italic",
+          "fontSize" : 140.459883862733,
+          "fontWeight" : 700,
+          "height" : 163,
+          "opacity" : 1,
+          "rotation" : 0,
+          "text" : "your",
+          "width" : 237,
+          "x" : 721,
+          "y" : 222.76
+        },
+        {
+          "fill" : "#111111",
+          "fontFamily" : "AppleGaramond-Italic",
+          "fontSize" : 140.459883862733,
+          "fontWeight" : 700,
+          "height" : 163,
+          "opacity" : 1,
+          "rotation" : 0,
+          "text" : "sounds",
+          "width" : 359,
+          "x" : 964.48,
+          "y" : 222.76
+        }
+      ],
+      "fonts" : {
+        "accentFamily" : "AppleGaramond-Italic",
+        "primaryFamily" : "Montserrat-Black"
+      },
+      "phrase" : "It's because of your sounds",
+      "timecode" : "00:00:20:10 - 00:00:22:14"
+    },
+    {
+      "background" : "#E7E7E7",
+      "elements" : [
+        {
+          "fill" : "#111111",
+          "fontFamily" : "Montserrat-Black",
+          "fontSize" : 122.93462238967989,
+          "fontWeight" : 650,
+          "height" : 152,
+          "opacity" : 1,
+          "rotation" : 0,
+          "text" : "If",
+          "width" : 98,
+          "x" : 587.76,
+          "y" : 129.6
+        },
+        {
+          "fill" : "#111111",
+          "fontFamily" : "Montserrat-Black",
+          "fontSize" : 122.93462238967989,
+          "fontWeight" : 650,
+          "height" : 152,
+          "opacity" : 1,
+          "rotation" : 0,
+          "text" : "you're",
+          "width" : 416,
+          "x" : 692.24,
+          "y" : 129.6
+        },
+        {
+          "fill" : "#111111",
+          "fontFamily" : "AppleGaramond-Italic",
+          "fontSize" : 162.97446202603874,
+          "fontWeight" : 700,
+          "height" : 188,
+          "opacity" : 1,
+          "rotation" : 0,
+          "text" : "Latino,",
+          "width" : 421,
+          "x" : 587.76,
+          "y" : 253.76
+        },
+        {
+          "fill" : "#111111",
+          "fontFamily" : "AppleGaramond-Italic",
+          "fontSize" : 162.97446202603874,
+          "fontWeight" : 700,
+          "height" : 188,
+          "opacity" : 1,
+          "rotation" : 0,
+          "text" : "Texas",
+          "width" : 317,
+          "x" : 1015.24,
+          "y" : 253.76
+        }
+      ],
+      "fonts" : {
+        "accentFamily" : "AppleGaramond-Italic",
+        "primaryFamily" : "Montserrat-Black"
+      },
+      "phrase" : "If you're Latino, Texas",
+      "timecode" : "00:00:22:14 - 00:00:23:14"
+    },
+    {
+      "background" : "#E7E7E7",
+      "elements" : [
+        {
+          "fill" : "#111111",
+          "fontFamily" : "Montserrat-Black",
+          "fontSize" : 125.44835077824784,
+          "fontWeight" : 650,
+          "height" : 155,
+          "opacity" : 1,
+          "rotation" : 0,
+          "text" : "doesn't",
+          "width" : 506,
+          "x" : 514.76,
+          "y" : 129.6
+        },
+        {
+          "fill" : "#111111",
+          "fontFamily" : "Montserrat-Black",
+          "fontSize" : 125.44835077824784,
+          "fontWeight" : 650,
+          "height" : 155,
+          "opacity" : 1,
+          "rotation" : 0,
+          "text" : "move",
+          "width" : 378,
+          "x" : 1027.24,
+          "y" : 129.6
+        },
+        {
+          "fill" : "#111111",
+          "fontFamily" : "AppleGaramond-Italic",
+          "fontSize" : 175.07055955204052,
+          "fontWeight" : 700,
+          "height" : 202,
+          "opacity" : 1,
+          "rotation" : 0,
+          "text" : "like",
+          "width" : 234,
+          "x" : 933.76,
+          "y" : 256.76
+        },
+        {
+          "fill" : "#111111",
+          "fontFamily" : "AppleGaramond-Italic",
+          "fontSize" : 175.07055955204052,
+          "fontWeight" : 700,
+          "height" : 202,
+          "opacity" : 1,
+          "rotation" : 0,
+          "text" : "this",
+          "width" : 231,
+          "x" : 1174.24,
+          "y" : 256.76
+        }
+      ],
+      "fonts" : {
+        "accentFamily" : "AppleGaramond-Italic",
+        "primaryFamily" : "Montserrat-Black"
+      },
+      "phrase" : "doesn't move like this",
+      "timecode" : "00:00:23:14 - 00:00:24:12"
+    },
+    {
+      "background" : "#E7E7E7",
+      "elements" : [
+        {
+          "fill" : "#111111",
+          "fontFamily" : "Montserrat-Black",
+          "fontSize" : 105.11456948236135,
+          "fontWeight" : 650,
+          "height" : 131,
+          "opacity" : 1,
+          "rotation" : 0,
+          "text" : "It's",
+          "width" : 174,
+          "x" : 568.02,
+          "y" : 129.6
+        },
+        {
+          "fill" : "#111111",
+          "fontFamily" : "Montserrat-Black",
+          "fontSize" : 105.11456948236135,
+          "fontWeight" : 650,
+          "height" : 131,
+          "opacity" : 1,
+          "rotation" : 0,
+          "text" : "because",
+          "width" : 478,
+          "x" : 748.5,
+          "y" : 129.6
+        },
+        {
+          "fill" : "#111111",
+          "fontFamily" : "Montserrat-Black",
+          "fontSize" : 105.11456948236135,
+          "fontWeight" : 650,
+          "height" : 131,
+          "opacity" : 1,
+          "rotation" : 0,
+          "text" : "of",
+          "width" : 119,
+          "x" : 1232.98,
+          "y" : 129.6
+        },
+        {
+          "fill" : "#111111",
+          "fontFamily" : "AppleGaramond-Italic",
+          "fontSize" : 139.45410659792324,
+          "fontWeight" : 700,
+          "height" : 161,
+          "opacity" : 1,
+          "rotation" : 0,
+          "text" : "your",
+          "width" : 235,
+          "x" : 754.5,
+          "y" : 232.76
+        },
+        {
+          "fill" : "#111111",
+          "fontFamily" : "AppleGaramond-Italic",
+          "fontSize" : 139.45410659792324,
+          "fontWeight" : 700,
+          "height" : 161,
+          "opacity" : 1,
+          "rotation" : 0,
+          "text" : "sounds",
+          "width" : 356,
+          "x" : 995.98,
+          "y" : 232.76
+        }
+      ],
+      "fonts" : {
+        "accentFamily" : "AppleGaramond-Italic",
+        "primaryFamily" : "Montserrat-Black"
+      },
+      "phrase" : "It's because of your sounds",
+      "timecode" : "00:00:24:12 - 00:00:27:02"
+    },
+    {
+      "background" : "#E7E7E7",
+      "elements" : [
+        {
+          "fill" : "#111111",
+          "fontFamily" : "Montserrat-Black",
+          "fontSize" : 119.72741308507942,
+          "fontWeight" : 700,
+          "height" : 148,
+          "opacity" : 1,
+          "rotation" : 0,
+          "text" : "If",
+          "width" : 95,
+          "x" : 570.76,
+          "y" : 129.6
+        },
+        {
+          "fill" : "#111111",
+          "fontFamily" : "Montserrat-Black",
+          "fontSize" : 119.72741308507942,
+          "fontWeight" : 700,
+          "height" : 148,
+          "opacity" : 1,
+          "rotation" : 0,
+          "text" : "you're",
+          "width" : 405,
+          "x" : 672.24,
+          "y" : 129.6
+        },
+        {
+          "fill" : "#111111",
+          "fontFamily" : "AppleGaramond-Italic",
+          "fontSize" : 169.92325695134426,
+          "fontWeight" : 550,
+          "height" : 196,
+          "opacity" : 1,
+          "rotation" : 0,
+          "text" : "Latino,",
+          "width" : 439,
+          "x" : 572.26,
+          "y" : 249.76
+        },
+        {
+          "fill" : "#111111",
+          "fontFamily" : "AppleGaramond-Italic",
+          "fontSize" : 169.92325695134426,
+          "fontWeight" : 550,
+          "height" : 196,
+          "opacity" : 1,
+          "rotation" : 0,
+          "text" : "Texas",
+          "width" : 330,
+          "x" : 1017.74,
+          "y" : 249.76
+        },
+        {
+          "fill" : "#111111",
+          "fontFamily" : "Montserrat-Black",
+          "fontSize" : 109.3926015780265,
+          "fontWeight" : 700,
+          "height" : 136,
+          "opacity" : 1,
+          "rotation" : 0,
+          "text" : "doesn't",
+          "width" : 442,
+          "x" : 570.76,
+          "y" : 417.91999999999996
+        },
+        {
+          "fill" : "#111111",
+          "fontFamily" : "Montserrat-Black",
+          "fontSize" : 109.3926015780265,
+          "fontWeight" : 700,
+          "height" : 136,
+          "opacity" : 1,
+          "rotation" : 0,
+          "text" : "move",
+          "width" : 330,
+          "x" : 1019.24,
+          "y" : 417.91999999999996
+        }
+      ],
+      "fonts" : {
+        "accentFamily" : "AppleGaramond-Italic",
+        "primaryFamily" : "Montserrat-Black"
+      },
+      "phrase" : "If you're Latino, Texas doesn't move",
+      "timecode" : "00:00:27:02 - 00:00:28:14"
+    },
+    {
+      "background" : "#E7E7E7",
+      "elements" : [
+        {
+          "fill" : "#111111",
+          "fontFamily" : "Montserrat-Black",
+          "fontSize" : 185.9589952836646,
+          "fontWeight" : 700,
+          "height" : 229,
+          "opacity" : 1,
+          "rotation" : 0,
+          "text" : "like",
+          "width" : 373,
+          "x" : 647.26,
+          "y" : 129.6
+        },
+        {
+          "fill" : "#111111",
+          "fontFamily" : "AppleGaramond-Italic",
+          "fontSize" : 185.9589952836646,
+          "fontWeight" : 700,
+          "height" : 229,
+          "opacity" : 1,
+          "rotation" : 0,
+          "text" : "this",
+          "width" : 246,
+          "x" : 1026.74,
+          "y" : 129.6
+        }
+      ],
+      "fonts" : {
+        "accentFamily" : "AppleGaramond-Italic",
+        "primaryFamily" : "Montserrat-Black"
+      },
+      "phrase" : "like this",
+      "timecode" : "00:00:28:14 - 00:00:29:01"
+    },
+    {
+      "background" : "#E7E7E7",
+      "elements" : [
+        {
+          "fill" : "#111111",
+          "fontFamily" : "Montserrat-Black",
+          "fontSize" : 105.3898744563858,
+          "fontWeight" : 650,
+          "height" : 131,
+          "opacity" : 1,
+          "rotation" : 0,
+          "text" : "It's",
+          "width" : 174,
+          "x" : 567.52,
+          "y" : 129.6
+        },
+        {
+          "fill" : "#111111",
+          "fontFamily" : "Montserrat-Black",
+          "fontSize" : 105.3898744563858,
+          "fontWeight" : 650,
+          "height" : 131,
+          "opacity" : 1,
+          "rotation" : 0,
+          "text" : "because",
+          "width" : 479,
+          "x" : 748,
+          "y" : 129.6
+        },
+        {
+          "fill" : "#111111",
+          "fontFamily" : "Montserrat-Black",
+          "fontSize" : 105.3898744563858,
+          "fontWeight" : 650,
+          "height" : 131,
+          "opacity" : 1,
+          "rotation" : 0,
+          "text" : "of",
+          "width" : 119,
+          "x" : 1233.48,
+          "y" : 129.6
+        },
+        {
+          "fill" : "#111111",
+          "fontFamily" : "AppleGaramond-Italic",
+          "fontSize" : 138.44832933311346,
+          "fontWeight" : 700,
+          "height" : 160,
+          "opacity" : 1,
+          "rotation" : 0,
+          "text" : "your",
+          "width" : 233,
+          "x" : 804,
+          "y" : 232.76
+        },
+        {
+          "fill" : "#111111",
+          "fontFamily" : "AppleGaramond-Italic",
+          "fontSize" : 138.44832933311346,
+          "fontWeight" : 700,
+          "height" : 160,
+          "opacity" : 1,
+          "rotation" : 0,
+          "text" : "sound",
+          "width" : 309,
+          "x" : 1043.48,
+          "y" : 232.76
+        }
+      ],
+      "fonts" : {
+        "accentFamily" : "AppleGaramond-Italic",
+        "primaryFamily" : "Montserrat-Black"
+      },
+      "phrase" : "It's because of your sound",
+      "timecode" : "00:00:29:01 - 00:00:30:05"
+    }
+  ]
+}
