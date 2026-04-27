@@ -2,29 +2,12 @@ import AppKit
 import Foundation
 
 struct LayoutExporter {
-    func prettyJSONString(for phrase: String, timecode: String?, layout: CompositionLayout) -> String {
-        let payload = PhraseLayoutExport(
-            phrase: phrase,
-            timecode: timecode,
-            background: layout.background,
-            fonts: layout.fonts,
-            elements: layout.elements
-        )
-        return stringify(payload)
+    func prettyJSONString(for item: PositionedSubtitleItem) -> String {
+        stringify(item)
     }
 
-    func jsonData(for entries: [ExportPhraseEntry], layouts: [CompositionLayout]) -> Data {
-        let phraseLayouts = zip(entries, layouts).map { entry, layout in
-            PhraseLayoutExport(
-                phrase: entry.phrase,
-                timecode: entry.timecode,
-                background: layout.background,
-                fonts: layout.fonts,
-                elements: layout.elements
-            )
-        }
-
-        let payload = BatchLayoutExport(layouts: phraseLayouts)
+    func jsonData(for items: [PositionedSubtitleItem]) -> Data {
+        let payload = BatchPositionedExport(items: items)
         return Data(stringify(payload).utf8)
     }
 
@@ -114,21 +97,8 @@ struct LayoutExporter {
     }
 }
 
-private struct PhraseLayoutExport: Encodable {
-    let phrase: String
-    let timecode: String?
-    let background: String
-    let fonts: FontSelection
-    let elements: [LayoutElement]
-}
-
-private struct BatchLayoutExport: Encodable {
-    let layouts: [PhraseLayoutExport]
-}
-
-struct ExportPhraseEntry {
-    let phrase: String
-    let timecode: String?
+private struct BatchPositionedExport: Encodable {
+    let items: [PositionedSubtitleItem]
 }
 
 private extension NSColor {

@@ -5,7 +5,7 @@ var h = null;
 
     var SETTINGS = {
         MOGRT_PATH: "/Users/danieldickinson/Documents/GitHub/Parter-Subtitles/Assets/subtitles_mogrt.mogrt",
-        JSON_PATH: "/Users/danieldickinson/Parter Dropbox/PROJECTES/04. VSL y Anuncios/Alfredo Riaño/202603 - Campaña Abril/04 Recursos/Captions/TRANSCRIPT Microcursos/ADS MICROCURSOS.editorial.json",
+        JSON_PATH: "/Users/danieldickinson/Documents/GitHub/Parter-Subtitles/Assets/(output) BODY ADS_example.json",
         TICKS_PER_SECOND: 254016000000,
         APPLY_POSITION: true,
         APPLY_FONT_STYLE: true,
@@ -587,50 +587,6 @@ var h = null;
         } catch (e) {
             return false;
         }
-    }
-
-    function snapSecondsToFrameFloor(seconds, fps) {
-        var frames;
-
-        seconds = Number(seconds);
-        fps = Number(fps);
-
-        if (isNaN(seconds)) {
-            return NaN;
-        }
-
-        if (isNaN(fps) || fps <= 0) {
-            return seconds;
-        }
-
-        frames = Math.floor((seconds * fps) + 0.000001);
-        return frames / fps;
-    }
-
-    function getLayoutEffectiveEndSeconds(items, layoutIndex, fps) {
-        var layout, nextLayout, endSec, nextStartSec, snappedNextStartSec;
-
-        layout = items[layoutIndex];
-        if (!layout) {
-            return NaN;
-        }
-
-        endSec = Number(layout.endSeconds);
-
-        if (layoutIndex + 1 < items.length) {
-            nextLayout = items[layoutIndex + 1];
-            nextStartSec = Number(nextLayout.startSeconds);
-
-            if (!isNaN(nextStartSec)) {
-                snappedNextStartSec = snapSecondsToFrameFloor(nextStartSec, fps);
-
-                if (isNaN(endSec) || snappedNextStartSec > endSec) {
-                    endSec = snappedNextStartSec;
-                }
-            }
-        }
-
-        return endSec;
     }
 
     function findTextPropInClip(clip) {
@@ -1307,8 +1263,8 @@ var h = null;
         };
     }
 
-    function buildWordUnitsFromLayouts(items, fps) {
-        var out, i, j, layout, el, totalDur, eachDur, startSec, visibleDur, endSec, effectiveLayoutEndSec;
+    function buildWordUnitsFromLayouts(items) {
+        var out, i, j, layout, el, totalDur, eachDur, startSec, visibleDur, endSec;
         out = [];
 
         for (i = 0; i < items.length; i++) {
@@ -1324,10 +1280,6 @@ var h = null;
             }
 
             eachDur = totalDur / layout.elements.length;
-            effectiveLayoutEndSec = getLayoutEffectiveEndSeconds(items, i, fps);
-            if (isNaN(effectiveLayoutEndSec) || effectiveLayoutEndSec <= Number(layout.startSeconds)) {
-                effectiveLayoutEndSec = Number(layout.endSeconds);
-            }
 
             for (j = 0; j < layout.elements.length; j++) {
                 el = layout.elements[j];
@@ -1336,7 +1288,7 @@ var h = null;
                     startSec = Number(layout.startSeconds) + (j * eachDur);
                 }
 
-                visibleDur = Number(effectiveLayoutEndSec) - startSec;
+                visibleDur = Number(layout.endSeconds) - startSec;
                 if (visibleDur <= 0) {
                     visibleDur = Number(el.durationSeconds);
                 }
@@ -1344,7 +1296,7 @@ var h = null;
                     visibleDur = eachDur;
                 }
 
-                endSec = Number(effectiveLayoutEndSec);
+                endSec = Number(layout.endSeconds);
                 if (isNaN(endSec) || endSec <= startSec) {
                     endSec = startSec + visibleDur;
                 }
@@ -1434,7 +1386,7 @@ var h = null;
             return fail("No se detectaron palabras válidas.");
         }
 
-        wordUnits = buildWordUnitsFromLayouts(items, detectedFPS);
+        wordUnits = buildWordUnitsFromLayouts(items);
         if (!wordUnits || !wordUnits.length) {
             return fail("No se pudieron generar words válidas desde el JSON.");
         }

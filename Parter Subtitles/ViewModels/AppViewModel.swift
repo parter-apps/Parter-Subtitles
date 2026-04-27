@@ -9,9 +9,12 @@ final class AppViewModel: ObservableObject {
     @Published var primaryFontFamily: String
     @Published var accentFontFamily: String
     @Published var availableFonts: [String]
-    @Published var verticalSpacingAdjustmentPx: Double = -30
-    @Published var canvasWidth: Double = 1920
-    @Published var canvasHeight: Double = 1080
+    @Published var verticalSpacingAdjustmentPx: Double = 5
+    @Published var lowerRowSpacingAdjustmentPx: Double = 10
+    @Published var wordSpacingAdjustmentPx: Double = 10
+    @Published var textScaleInput: String = "0.7"
+    @Published var canvasWidth: Double = 1080
+    @Published var canvasHeight: Double = 1920
     @Published var seed: UInt64 = 42
     @Published var currentLayout: CompositionLayout?
     @Published var jsonPreview: String = "{}"
@@ -19,9 +22,10 @@ final class AppViewModel: ObservableObject {
     @Published var extractedPhrases: [String] = []
     @Published var selectedPhraseIndex: Int = 0
 
-    private var phraseEntries: [ExportPhraseEntry] = []
+    private var sourceItems: [SubtitleInputItem] = []
     private var generatedLayouts: [CompositionLayout] = []
-    private let parser = TextParser()
+    private var positionedItems: [PositionedSubtitleItem] = []
+
     private let styler = StyleEngine()
     private let layoutEngine = LayoutEngine()
     private let exporter = LayoutExporter()
@@ -30,12 +34,13 @@ final class AppViewModel: ObservableObject {
         let fonts = NSFontManager.shared.availableFonts.sorted()
         availableFonts = fonts
 
-        let montserrat = fonts.first(where: { $0.localizedCaseInsensitiveContains("Montserrat") })
-        let garamond = fonts.first(where: {
-            $0.localizedCaseInsensitiveContains("Apple Garamond Pro Italic") ||
-                $0.localizedCaseInsensitiveContains("AppleGaramond-Italic") ||
-                $0.localizedCaseInsensitiveContains("Garamond")
-        })
+        let montserrat = fonts.first(where: { $0.localizedCaseInsensitiveContains("Montserrat Bold") }) ??
+            fonts.first(where: { $0.localizedCaseInsensitiveContains("Montserrat-Bold") }) ??
+            fonts.first(where: { $0.localizedCaseInsensitiveContains("Montserrat") })
+        let garamond = fonts.first(where: { $0.localizedCaseInsensitiveContains("Apple Garamond Italic") }) ??
+            fonts.first(where: { $0.localizedCaseInsensitiveContains("AppleGaramond-Italic") }) ??
+            fonts.first(where: { $0.localizedCaseInsensitiveContains("Apple Garamond Pro Italic") }) ??
+            fonts.first(where: { $0.localizedCaseInsensitiveContains("Garamond") })
 
         primaryFontFamily = montserrat ?? fonts.first ?? "Helvetica Neue"
         accentFontFamily = garamond ?? fonts.first ?? "Times New Roman"
@@ -46,20 +51,21 @@ final class AppViewModel: ObservableObject {
             seed = UInt64.random(in: 1...UInt64.max)
         }
 
-        let entries = extractPhrases(from: inputText)
-        guard !entries.isEmpty else {
+        let items = parseItems(from: inputText)
+        guard !items.isEmpty else {
             currentLayout = nil
             jsonPreview = "{}"
             extractedPhrases = []
-            phraseEntries = []
+            sourceItems = []
             generatedLayouts = []
-            statusMessage = "No valid subtitle text detected."
+            positionedItems = []
+            statusMessage = "No valid JSON items found."
             return
         }
 
-        phraseEntries = entries
-        extractedPhrases = entries.map { $0.phrase }
-        selectedPhraseIndex = min(selectedPhraseIndex, max(entries.count - 1, 0))
+        sourceItems = items
+        extractedPhrases = items.map(\.text)
+        selectedPhraseIndex = min(selectedPhraseIndex, max(items.count - 1, 0))
 
         let canvas = CanvasSpec(
             width: max(640, CGFloat(canvasWidth)),
@@ -69,47 +75,49 @@ final class AppViewModel: ObservableObject {
             primaryFamily: primaryFontFamily.trimmingCharacters(in: .whitespacesAndNewlines),
             accentFamily: accentFontFamily.trimmingCharacters(in: .whitespacesAndNewlines)
         )
+        let textScale = parseTextScale(textScaleInput)
 
-        generatedLayouts = entries.enumerated().map { index, entry in
-            let parsed = parser.parse(entry.phrase)
-            let lineCount = automaticLineCount(wordCount: parsed.tokens.count)
+        generatedLayouts = []
+        positionedItems = []
+
+        for (index, item) in items.enumerated() {
             let styled = styler.style(
-                parsed: parsed,
+                item: item,
                 fonts: fonts,
                 canvas: canvas,
                 seed: seed &+ UInt64(index) &* 997,
-                targetLineCount: lineCount
+                textScale: textScale
             )
-
-            return layoutEngine.compose(
-                styledBlocks: styled,
+            let result = layoutEngine.compose(
+                item: item,
+                styledWords: styled,
                 canvas: canvas,
                 fonts: fonts,
                 seed: seed &+ UInt64(index),
-                requestedLineCount: lineCount,
-                verticalSpacingAdjustmentPx: verticalSpacingAdjustmentPx
+                verticalSpacingAdjustmentPx: verticalSpacingAdjustmentPx,
+                lowerRowSpacingAdjustmentPx: lowerRowSpacingAdjustmentPx,
+                wordSpacingAdjustmentPx: wordSpacingAdjustmentPx,
+                textScale: textScale
             )
+            generatedLayouts.append(result.layout)
+            positionedItems.append(result.positionedItem)
         }
 
         selectPhrase(index: selectedPhraseIndex)
-        statusMessage = "Generated \(generatedLayouts.count) subtitle layouts."
+        statusMessage = "Generated \(generatedLayouts.count) subtitle layouts from JSON."
     }
 
     func selectPhrase(index: Int) {
-        guard index >= 0, index < generatedLayouts.count else { return }
+        guard index >= 0, index < generatedLayouts.count, index < positionedItems.count else { return }
         selectedPhraseIndex = index
-        let layout = generatedLayouts[index]
-        currentLayout = layout
-        jsonPreview = exporter.prettyJSONString(
-            for: extractedPhrases[index],
-            timecode: phraseEntries[index].timecode,
-            layout: layout
-        )
+        currentLayout = generatedLayouts[index]
+        jsonPreview = exporter.prettyJSONString(for: positionedItems[index])
     }
 
-    func importTXT() {
+    func importJSON() {
         let panel = NSOpenPanel()
-        panel.allowedContentTypes = [.plainText]
+        let jsonType = UTType(filenameExtension: "json") ?? .json
+        panel.allowedContentTypes = [jsonType]
         panel.allowsMultipleSelection = false
         panel.canChooseDirectories = false
 
@@ -120,12 +128,12 @@ final class AppViewModel: ObservableObject {
             inputText = content
             generate(newSeed: false)
         } catch {
-            statusMessage = "Failed to load TXT: \(error.localizedDescription)"
+            statusMessage = "Failed to load JSON: \(error.localizedDescription)"
         }
     }
 
     func exportJSON() {
-        guard !generatedLayouts.isEmpty, !phraseEntries.isEmpty else {
+        guard !positionedItems.isEmpty else {
             statusMessage = "Generate a layout before exporting."
             return
         }
@@ -133,7 +141,7 @@ final class AppViewModel: ObservableObject {
         guard let url = saveURL(defaultName: "layout", contentType: .json) else { return }
 
         do {
-            try exporter.jsonData(for: phraseEntries, layouts: generatedLayouts).write(to: url)
+            try exporter.jsonData(for: positionedItems).write(to: url)
             statusMessage = "JSON exported to \(url.lastPathComponent)."
         } catch {
             statusMessage = "Failed to export JSON: \(error.localizedDescription)"
@@ -150,7 +158,7 @@ final class AppViewModel: ObservableObject {
         guard let url = saveURL(defaultName: "layout", contentType: svgType) else { return }
 
         do {
-            guard let data = exporter.svgString(for: layout).data(using: String.Encoding.utf8) else {
+            guard let data = exporter.svgString(for: layout).data(using: .utf8) else {
                 statusMessage = "Failed to encode SVG data."
                 return
             }
@@ -182,56 +190,22 @@ final class AppViewModel: ObservableObject {
         }
     }
 
-    private func automaticLineCount(wordCount: Int) -> Int {
-        if wordCount <= 2 { return 1 }
-        if wordCount <= 4 { return 2 }
-        return 3
-    }
-
-    private func extractPhrases(from raw: String) -> [ExportPhraseEntry] {
-        let lines = raw
-            .components(separatedBy: .newlines)
-            .map { $0.trimmingCharacters(in: .whitespacesAndNewlines) }
-
-        let timecodeRegex = try? NSRegularExpression(pattern: "^\\d{2}:\\d{2}:\\d{2}:\\d{2}\\s*-\\s*\\d{2}:\\d{2}:\\d{2}:\\d{2}$")
-
-        var entries: [ExportPhraseEntry] = []
-        var currentTimecode: String?
-
-        for line in lines {
-            guard !line.isEmpty else { continue }
-
-            if isTimecode(line, regex: timecodeRegex) {
-                currentTimecode = line
-                continue
-            }
-
-            let phrases = splitBySentence(line)
-            if phrases.isEmpty {
-                entries.append(ExportPhraseEntry(phrase: line, timecode: currentTimecode))
-            } else {
-                for phrase in phrases {
-                    entries.append(ExportPhraseEntry(phrase: phrase, timecode: currentTimecode))
-                }
-            }
+    private func parseItems(from raw: String) -> [SubtitleInputItem] {
+        guard let data = raw.data(using: .utf8) else { return [] }
+        let decoder = JSONDecoder()
+        if let payload = try? decoder.decode(SubtitleInputPayload.self, from: data) {
+            return payload.items
         }
-
-        return entries
+        return []
     }
 
-    private func isTimecode(_ line: String, regex: NSRegularExpression?) -> Bool {
-        guard let regex else { return false }
-        let range = NSRange(location: 0, length: line.utf16.count)
-        return regex.firstMatch(in: line, options: [], range: range) != nil
-    }
+    private func parseTextScale(_ raw: String) -> Double {
+        let normalized = raw
+            .trimmingCharacters(in: .whitespacesAndNewlines)
+            .replacingOccurrences(of: ",", with: ".")
 
-    private func splitBySentence(_ line: String) -> [String] {
-        let separators = CharacterSet(charactersIn: ".!?")
-        let parts = line.components(separatedBy: separators)
-        let cleaned = parts
-            .map { $0.trimmingCharacters(in: .whitespacesAndNewlines) }
-            .filter { !$0.isEmpty }
-        return cleaned.isEmpty ? [line] : cleaned
+        guard let value = Double(normalized) else { return 1.0 }
+        return max(0.0, value)
     }
 
     private func saveURL(defaultName: String, contentType: UTType) -> URL? {

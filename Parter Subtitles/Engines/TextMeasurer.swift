@@ -1,4 +1,5 @@
 import AppKit
+import CoreText
 import Foundation
 
 struct TextMeasurer {
@@ -20,6 +21,41 @@ struct TextMeasurer {
         return NSFont.systemFont(ofSize: size, weight: weightValue)
     }
 
+    func fontVerticalMetrics(fontFamily: String, fontSize: CGFloat, fontWeight: Int) -> FontVerticalMetrics {
+        let font = resolvedFont(family: fontFamily, size: fontSize, weight: fontWeight)
+        return FontVerticalMetrics(
+            ascender: font.ascender,
+            descender: abs(font.descender)
+        )
+    }
+
+    func inkMetrics(text: String, fontFamily: String, fontSize: CGFloat, fontWeight: Int) -> InkMetrics {
+        let font = resolvedFont(family: fontFamily, size: fontSize, weight: fontWeight)
+        let attributes: [NSAttributedString.Key: Any] = [.font: font]
+        let attr = NSAttributedString(string: text, attributes: attributes)
+        let line = CTLineCreateWithAttributedString(attr as CFAttributedString)
+
+        var ascent: CGFloat = 0
+        var descent: CGFloat = 0
+        var leading: CGFloat = 0
+        let advance = CGFloat(CTLineGetTypographicBounds(line, &ascent, &descent, &leading))
+
+        let glyphBounds = CTLineGetBoundsWithOptions(line, [.useGlyphPathBounds, .excludeTypographicLeading])
+        if glyphBounds.isNull || glyphBounds.isEmpty {
+            return InkMetrics(top: ascent, bottom: -descent, left: 0, right: advance, advanceWidth: advance)
+        }
+
+        let top = glyphBounds.maxY
+        let bottom = glyphBounds.minY
+        return InkMetrics(
+            top: top,
+            bottom: bottom,
+            left: glyphBounds.minX,
+            right: glyphBounds.maxX,
+            advanceWidth: advance
+        )
+    }
+
     private func fallbackCandidates(for family: String) -> [String] {
         let lower = family.lowercased()
 
@@ -39,4 +75,17 @@ struct TextMeasurer {
 
         return [family]
     }
+}
+
+struct InkMetrics {
+    let top: CGFloat
+    let bottom: CGFloat
+    let left: CGFloat
+    let right: CGFloat
+    let advanceWidth: CGFloat
+}
+
+struct FontVerticalMetrics {
+    let ascender: CGFloat
+    let descender: CGFloat
 }

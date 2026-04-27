@@ -22,34 +22,45 @@ struct StyleEngine {
     private let measurer = TextMeasurer()
 
     func style(
-        parsed: ParsedText,
+        item: SubtitleInputItem,
         fonts: FontSelection,
         canvas: CanvasSpec,
         seed: UInt64,
-        targetLineCount: Int
-    ) -> [StyledBlock] {
-        guard !parsed.blocks.isEmpty else { return [] }
+        textScale: Double
+    ) -> [StyledInputWord] {
+        guard !item.words.isEmpty else { return [] }
 
-        var random = SeededRandom(seed: seed)
+        let globalScale = CGFloat(max(0.0, textScale))
         let minDimension = min(canvas.width, canvas.height)
-        let clampedLines = min(max(targetLineCount, 1), 3)
-
-        let baseScale: CGFloat
-        switch clampedLines {
-        case 1: baseScale = 0.17
-        case 2: baseScale = 0.135
-        default: baseScale = 0.11
+        let primarySize = max(1, minDimension * 0.095 * globalScale)
+        let primaryReference = measurer.measure(
+            text: "Ag",
+            fontFamily: fonts.primaryFamily,
+            fontSize: primarySize,
+            fontWeight: 700
+        )
+        let accentReference = measurer.measure(
+            text: "Ag",
+            fontFamily: fonts.accentFamily,
+            fontSize: primarySize,
+            fontWeight: 700
+        )
+        let accentSize: CGFloat
+        if accentReference.height > 0 {
+            accentSize = primarySize * (primaryReference.height / accentReference.height) * 2
+        } else {
+            accentSize = primarySize * 2
         }
 
-        return parsed.blocks.map { block in
-            let connectorAdjustment = block.connectorCount > 0 ? 0.85 : 1.0
-            let jitter = CGFloat(random.next(in: -0.006...0.006))
-            let size = max(20, (baseScale + jitter) * minDimension * connectorAdjustment)
+        return item.words.map { word in
+            let fontFamily = word.role == .accent ? fonts.accentFamily : fonts.primaryFamily
+            let fontWeight = word.role == .accent ? 550 : 700
+            let size = word.role == .accent ? accentSize : primarySize
 
             let style = WordStyle(
-                fontFamily: fonts.primaryFamily,
+                fontFamily: fontFamily,
                 fontSize: size,
-                fontWeight: block.connectorCount > 0 ? 500 : 700,
+                fontWeight: fontWeight,
                 fill: "#111111",
                 rotation: 0,
                 opacity: 1,
@@ -57,18 +68,13 @@ struct StyleEngine {
             )
 
             let measured = measurer.measure(
-                text: block.text,
+                text: word.text,
                 fontFamily: style.fontFamily,
                 fontSize: style.fontSize,
                 fontWeight: style.fontWeight
             )
 
-            return StyledBlock(
-                block: block,
-                style: style,
-                measuredSize: measured,
-                role: .support
-            )
+            return StyledInputWord(word: word, style: style, measuredSize: measured)
         }
     }
 }

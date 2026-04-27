@@ -9,12 +9,55 @@
 <body>
     <section class="panel">
         <div class="card">
-            <p class="eyebrow">Premiere UXP Probe</p>
-            <h1 class="title">Transcript Export</h1>
-            <p class="subtitle">Export the active sequence transcript once, then also derive sentence-grouped JSON and a TXT file with the same timecode-plus-text structure as your sample export.</p>
-            <button id="exportBtn" type="button" uxp-variant="cta">Export Transcript, Sentences and TXT</button>
+            <p class="eyebrow">Premiere UXP Panel</p>
+            <h1 class="title">Parter Subtitles</h1>
+            <p class="subtitle">Primer port del motor editorial al panel UXP: podemos cargar el transcript activo como TXT, aplicar la lógica tipográfica y exportar el JSON que espera el importador actual.</p>
+
+            <div class="buttonRow">
+                <button id="loadTranscriptBtn" type="button" uxp-variant="primary">Load Active Transcript as TXT</button>
+                <button id="exportTranscriptBtn" type="button" uxp-variant="secondary">Export Transcript, Sentences and TXT</button>
+            </div>
+
+            <label class="label" for="inputText">Input TXT / transcript</label>
+            <textarea id="inputText" class="inputText" spellcheck="false"></textarea>
+
+            <div class="grid">
+                <label class="field">
+                    <span>Primary Font</span>
+                    <input id="primaryFontFamily" type="text" value="Montserrat">
+                </label>
+                <label class="field">
+                    <span>Accent Font</span>
+                    <input id="accentFontFamily" type="text" value="AppleGaramond-Italic">
+                </label>
+                <label class="field small">
+                    <span>Canvas Width</span>
+                    <input id="canvasWidth" type="number" value="1920">
+                </label>
+                <label class="field small">
+                    <span>Canvas Height</span>
+                    <input id="canvasHeight" type="number" value="1080">
+                </label>
+                <label class="field small">
+                    <span>Seed</span>
+                    <input id="seed" type="number" value="42">
+                </label>
+                <label class="field small">
+                    <span>Vertical Spacing</span>
+                    <input id="verticalSpacingAdjustmentPx" type="number" value="-30">
+                </label>
+            </div>
+
+            <div class="buttonRow">
+                <button id="generateLayoutBtn" type="button" uxp-variant="cta">Generate Layout JSON</button>
+                <button id="exportLayoutBtn" type="button" uxp-variant="secondary">Export Layout JSON</button>
+            </div>
+
             <div class="status" id="status">Loading...</div>
             <pre class="log" id="log"></pre>
+
+            <label class="label" for="jsonPreview">Generated JSON</label>
+            <textarea id="jsonPreview" class="jsonPreview" spellcheck="false"></textarea>
         </div>
     </section>
 </body>

@@ -1,5 +1,6 @@
 const { entrypoints, storage } = require("uxp");
 const app = require("premierepro");
+const { generateLayoutsFromRawInput } = require("./src/layoutPipeline");
 
 const { localFileSystem } = storage;
 const TXT_EXPORT_MAX_WORDS = 4;
@@ -8,6 +9,8 @@ const TXT_EXPORT_MAX_DURATION = 1.75;
 const TXT_EXPORT_MIN_WORDS = 2;
 const DEFAULT_EXPORT_FPS = 25;
 let uiBound = false;
+let latestLayoutJSON = "";
+let latestSequenceName = "layout";
 
 function safeToString(value) {
     try {
@@ -90,10 +93,7 @@ async function detectSequenceFPS(sequence) {
                 frameRate = await settings.getVideoFrameRate();
                 fps = extractFrameRateValue(frameRate);
                 if (fps) {
-                    return {
-                        fps: fps,
-                        source: "sequence.getSettings().getVideoFrameRate()"
-                    };
+                    return { fps: fps, source: "sequence.getSettings().getVideoFrameRate()" };
                 }
             }
         }
@@ -102,27 +102,18 @@ async function detectSequenceFPS(sequence) {
     try {
         fps = extractFrameRateValue(sequence && sequence.frameRate);
         if (fps) {
-            return {
-                fps: fps,
-                source: "sequence.frameRate"
-            };
+            return { fps: fps, source: "sequence.frameRate" };
         }
     } catch (error2) {}
 
     try {
         fps = Number(sequence && sequence.timebase);
         if (fps && !isNaN(fps) && fps > 0 && fps <= 120) {
-            return {
-                fps: fps,
-                source: "sequence.timebase"
-            };
+            return { fps: fps, source: "sequence.timebase" };
         }
     } catch (error3) {}
 
-    return {
-        fps: DEFAULT_EXPORT_FPS,
-        source: "fallback"
-    };
+    return { fps: DEFAULT_EXPORT_FPS, source: "fallback" };
 }
 
 function buildSentenceGroups(transcriptData) {
@@ -397,15 +388,30 @@ function getEl(id) {
     return document.getElementById(id);
 }
 
-function bindUI() {
-    const exportBtn = getEl("exportBtn");
+function getInputValue(id) {
+    const element = getEl(id);
+    return element ? element.value : "";
+}
 
-    if (uiBound || !exportBtn) {
+function bindUI() {
+    if (uiBound) {
         return;
     }
 
-    exportBtn.addEventListener("click", function () {
-        runExport();
+    getEl("loadTranscriptBtn").addEventListener("click", function () {
+        loadActiveTranscriptIntoInput();
+    });
+
+    getEl("exportTranscriptBtn").addEventListener("click", function () {
+        exportTranscriptArtifacts();
+    });
+
+    getEl("generateLayoutBtn").addEventListener("click", function () {
+        generateLayoutJSON();
+    });
+
+    getEl("exportLayoutBtn").addEventListener("click", function () {
+        exportLayoutJSON();
     });
 
     uiBound = true;
@@ -418,7 +424,7 @@ function appendLog(message) {
         return;
     }
 
-    logEl.textContent += "[transcript_export_panel] " + message + "\n";
+    logEl.textContent += "[parter_panel] " + message + "\n";
     logEl.scrollTop = logEl.scrollHeight;
 }
 
@@ -430,28 +436,31 @@ function setStatus(message) {
 }
 
 function setBusy(busy) {
-    const exportBtn = getEl("exportBtn");
-    if (exportBtn) {
-        exportBtn.disabled = !!busy;
-    }
+    ["loadTranscriptBtn", "exportTranscriptBtn", "generateLayoutBtn", "exportLayoutBtn"].forEach(function (id) {
+        const button = getEl(id);
+        if (button) {
+            button.disabled = !!busy;
+        }
+    });
 }
 
 async function getActiveSequenceContext() {
     const project = await app.Project.getActiveProject();
+    let sequence;
+    let projectItem = null;
+
     if (!project) {
         throw new Error("No hay proyecto activo.");
     }
 
     appendLog("Proyecto activo: " + safeToString(project.name));
 
-    const sequence = await project.getActiveSequence();
+    sequence = await project.getActiveSequence();
     if (!sequence) {
         throw new Error("No hay secuencia activa.");
     }
 
     appendLog("Secuencia activa detectada.");
-
-    let projectItem = null;
 
     if (typeof sequence.getProjectItem === "function") {
         projectItem = await sequence.getProjectItem();
@@ -500,36 +509,30 @@ async function getActiveSequenceContext() {
         throw new Error("ClipProjectItem.cast no está disponible.");
     }
 
-    const clipProjectItem = app.ClipProjectItem.cast(projectItem);
-    if (!clipProjectItem) {
-        throw new Error("No se pudo convertir ProjectItem a ClipProjectItem.");
-    }
-
-    if (typeof clipProjectItem.isSequence === "function") {
-        appendLog("clipProjectItem.isSequence() = " + safeToString(await clipProjectItem.isSequence()));
-    }
-
     return {
         sequence: sequence,
-        clipProjectItem: clipProjectItem
+        clipProjectItem: app.ClipProjectItem.cast(projectItem)
     };
 }
 
 async function exportTranscriptJSON() {
+    let context;
+    let jsonString;
+
     if (!app.Transcript || typeof app.Transcript.exportToJSON !== "function") {
         throw new Error("Transcript.exportToJSON no está disponible en este runtime UXP.");
     }
 
-    appendLog("Transcript.exportToJSON disponible.");
-
-    const context = await getActiveSequenceContext();
-    const jsonString = await app.Transcript.exportToJSON(context.clipProjectItem);
+    context = await getActiveSequenceContext();
+    jsonString = await app.Transcript.exportToJSON(context.clipProjectItem);
 
     appendLog("Transcript.exportToJSON ejecutado.");
 
     if (!jsonString) {
         throw new Error("La secuencia no devolvió transcript JSON.");
     }
+
+    latestSequenceName = sanitizeFileName(context.clipProjectItem.name);
 
     return {
         sequence: context.sequence,
@@ -538,68 +541,134 @@ async function exportTranscriptJSON() {
     };
 }
 
-async function exportAllOutputs() {
+async function buildTranscriptArtifacts() {
     const transcriptExport = await exportTranscriptJSON();
-    const sequence = transcriptExport.sequence;
-    const clipProjectItem = transcriptExport.clipProjectItem;
     const transcriptJSON = transcriptExport.jsonString;
     const transcriptData = parseTranscriptJSONString(transcriptJSON);
     const sentenceData = buildSentenceGroups(transcriptData);
     const textBlocks = buildCaptionLikeTextBlocks(transcriptData);
-    const fpsInfo = await detectSequenceFPS(sequence);
+    const fpsInfo = await detectSequenceFPS(transcriptExport.sequence);
     const txtText = buildTXTFromBlocks(textBlocks, fpsInfo.fps);
-    const folder = await localFileSystem.getFolder();
-    const baseName = sanitizeFileName(clipProjectItem.name);
-    let rawFile;
-    let sentencesFile;
-    let txtFile;
 
     appendLog("Sentencias derivadas desde transcript: " + sentenceData.sentenceCount);
     appendLog("Bloques TXT derivados desde transcript: " + textBlocks.length);
     appendLog("FPS usado para TXT: " + safeToString(fpsInfo.fps) + " (" + fpsInfo.source + ")");
 
-    if (!folder) {
-        throw new Error("La exportación fue cancelada por el usuario.");
-    }
-
-    rawFile = await writeFileInFolder(folder, baseName + " transcript.json", transcriptJSON);
-    sentencesFile = await writeFileInFolder(folder, baseName + " transcript sentences.json", JSON.stringify(sentenceData, null, 2));
-    txtFile = await writeFileInFolder(folder, baseName + ".txt", txtText);
-
-    appendLog("Archivo guardado: " + safeToString(rawFile.nativePath));
-    appendLog("Archivo guardado: " + safeToString(sentencesFile.nativePath));
-    appendLog("Archivo guardado: " + safeToString(txtFile.nativePath));
-
     return {
-        transcriptPath: rawFile.nativePath,
-        sentencePath: sentencesFile.nativePath,
-        txtPath: txtFile.nativePath,
-        transcriptBytes: transcriptJSON.length,
-        sentenceCount: sentenceData.sentenceCount,
-        txtBlockCount: textBlocks.length
+        sequence: transcriptExport.sequence,
+        clipProjectItem: transcriptExport.clipProjectItem,
+        transcriptJSON: transcriptJSON,
+        sentenceData: sentenceData,
+        txtText: txtText
     };
 }
 
-async function runExport() {
+async function loadActiveTranscriptIntoInput() {
     setBusy(true);
-    setStatus("Exportando archivos...");
+    setStatus("Cargando transcript activo...");
     appendLog("--------------------------------------");
 
     try {
-        const result = await exportAllOutputs();
-        setStatus("Exportado.");
-        appendLog("OK transcriptBytes=" + result.transcriptBytes);
-        appendLog("OK sentenceCount=" + result.sentenceCount);
-        appendLog("OK txtBlockCount=" + result.txtBlockCount);
-        appendLog("OK transcriptPath=" + safeToString(result.transcriptPath));
-        appendLog("OK sentencePath=" + safeToString(result.sentencePath));
-        appendLog("OK txtPath=" + safeToString(result.txtPath));
+        const artifacts = await buildTranscriptArtifacts();
+        getEl("inputText").value = artifacts.txtText;
+        setStatus("Transcript cargado en el input.");
+        appendLog("TXT cargado en el panel.");
     } catch (error) {
         setStatus("Error.");
         appendLog("ERROR: " + safeToString(error && error.message ? error.message : error));
-        if (error && error.stack) {
-            appendLog(error.stack);
+    } finally {
+        setBusy(false);
+    }
+}
+
+async function exportTranscriptArtifacts() {
+    setBusy(true);
+    setStatus("Exportando transcript...");
+    appendLog("--------------------------------------");
+
+    try {
+        const artifacts = await buildTranscriptArtifacts();
+        const folder = await localFileSystem.getFolder();
+        let rawFile;
+        let sentencesFile;
+        let txtFile;
+
+        if (!folder) {
+            throw new Error("La exportación fue cancelada por el usuario.");
         }
+
+        rawFile = await writeFileInFolder(folder, latestSequenceName + " transcript.json", artifacts.transcriptJSON);
+        sentencesFile = await writeFileInFolder(folder, latestSequenceName + " transcript sentences.json", JSON.stringify(artifacts.sentenceData, null, 2));
+        txtFile = await writeFileInFolder(folder, latestSequenceName + ".txt", artifacts.txtText);
+
+        appendLog("Archivo guardado: " + safeToString(rawFile.nativePath));
+        appendLog("Archivo guardado: " + safeToString(sentencesFile.nativePath));
+        appendLog("Archivo guardado: " + safeToString(txtFile.nativePath));
+        setStatus("Transcript exportado.");
+    } catch (error) {
+        setStatus("Error.");
+        appendLog("ERROR: " + safeToString(error && error.message ? error.message : error));
+    } finally {
+        setBusy(false);
+    }
+}
+
+function generateLayoutJSON() {
+    let result;
+
+    setBusy(true);
+    setStatus("Generando layout JSON...");
+    appendLog("--------------------------------------");
+
+    try {
+        result = generateLayoutsFromRawInput({
+            document: document,
+            rawText: getInputValue("inputText"),
+            primaryFontFamily: getInputValue("primaryFontFamily"),
+            accentFontFamily: getInputValue("accentFontFamily"),
+            canvasWidth: getInputValue("canvasWidth"),
+            canvasHeight: getInputValue("canvasHeight"),
+            seed: getInputValue("seed"),
+            verticalSpacingAdjustmentPx: getInputValue("verticalSpacingAdjustmentPx")
+        });
+
+        latestLayoutJSON = result.batchJSON;
+        getEl("jsonPreview").value = result.batchJSON;
+        setStatus("Layout generado.");
+        appendLog("Frases procesadas: " + result.entries.length);
+    } catch (error) {
+        setStatus("Error.");
+        appendLog("ERROR: " + safeToString(error && error.message ? error.message : error));
+    } finally {
+        setBusy(false);
+    }
+}
+
+async function exportLayoutJSON() {
+    let file;
+
+    if (!latestLayoutJSON) {
+        generateLayoutJSON();
+    }
+
+    if (!latestLayoutJSON) {
+        return;
+    }
+
+    setBusy(true);
+    setStatus("Exportando layout JSON...");
+
+    try {
+        file = await localFileSystem.getFileForSaving(latestSequenceName + " layout.json", { types: ["json"] });
+        if (!file) {
+            throw new Error("La exportación fue cancelada por el usuario.");
+        }
+        await file.write(latestLayoutJSON);
+        appendLog("Layout JSON guardado: " + safeToString(file.nativePath));
+        setStatus("Layout JSON exportado.");
+    } catch (error) {
+        setStatus("Error.");
+        appendLog("ERROR: " + safeToString(error && error.message ? error.message : error));
     } finally {
         setBusy(false);
     }
@@ -613,7 +682,7 @@ document.addEventListener("DOMContentLoaded", function () {
 entrypoints.setup({
     plugin: {
         create() {
-            console.log("Parter Transcript Export plugin created.");
+            console.log("Parter Subtitles plugin created.");
         }
     },
     panels: {

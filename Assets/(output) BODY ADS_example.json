@@ -1,0 +1,1191 @@
+{
+  "items" : [
+    {
+      "accentLineIndex" : 0,
+      "end" : 1.17,
+      "lines" : [
+        {
+          "from" : 0,
+          "to" : 1
+        }
+      ],
+      "start" : 0.39,
+      "text" : "Mi secreto",
+      "words" : [
+        {
+          "duration" : 0.33,
+          "fill" : "#111111",
+          "fontFamily" : "Montserrat-Bold",
+          "fontSize" : 71.82,
+          "line" : 0,
+          "role" : "primary",
+          "rotation" : 0,
+          "start" : 0.39,
+          "text" : "Mi",
+          "x" : 293.26,
+          "y" : 1183.4162999999999
+        },
+        {
+          "duration" : 0.45,
+          "fill" : "#111111",
+          "fontFamily" : "AppleGaramond-Italic",
+          "fontSize" : 153.89999999999998,
+          "line" : 0,
+          "role" : "accent",
+          "rotation" : 0,
+          "start" : 0.72,
+          "text" : "secreto",
+          "x" : 402.74,
+          "y" : 1183.4162999999999
+        }
+      ]
+    },
+    {
+      "accentLineIndex" : 1,
+      "end" : 3.03,
+      "lines" : [
+        {
+          "from" : 0,
+          "to" : 1
+        },
+        {
+          "from" : 2,
+          "to" : 3
+        },
+        {
+          "from" : 4,
+          "to" : 4
+        }
+      ],
+      "start" : 1.17,
+      "text" : "para que cualquier profesional consiga",
+      "words" : [
+        {
+          "duration" : 0.21,
+          "fill" : "#111111",
+          "fontFamily" : "Montserrat-Bold",
+          "fontSize" : 71.82,
+          "line" : 0,
+          "role" : "primary",
+          "rotation" : 0,
+          "start" : 1.17,
+          "text" : "para",
+          "x" : 210.26,
+          "y" : 1194.73308
+        },
+        {
+          "duration" : 0.12,
+          "fill" : "#111111",
+          "fontFamily" : "Montserrat-Bold",
+          "fontSize" : 71.82,
+          "line" : 0,
+          "role" : "primary",
+          "rotation" : 0,
+          "start" : 1.38,
+          "text" : "que",
+          "x" : 396.74,
+          "y" : 1194.73308
+        },
+        {
+          "duration" : 0.48,
+          "fill" : "#111111",
+          "fontFamily" : "AppleGaramond-Italic",
+          "fontSize" : 84.7618121442125,
+          "line" : 1,
+          "role" : "accent",
+          "rotation" : 0,
+          "start" : 1.5,
+          "text" : "cualquier",
+          "x" : 210.26,
+          "y" : 1275.084190313093
+        },
+        {
+          "duration" : 0.57,
+          "fill" : "#111111",
+          "fontFamily" : "AppleGaramond-Italic",
+          "fontSize" : 84.7618121442125,
+          "line" : 1,
+          "role" : "accent",
+          "rotation" : 0,
+          "start" : 1.98,
+          "text" : "profesional",
+          "x" : 522.74,
+          "y" : 1275.084190313093
+        },
+        {
+          "duration" : 0.48,
+          "fill" : "#111111",
+          "fontFamily" : "Montserrat-Bold",
+          "fontSize" : 71.82,
+          "line" : 2,
+          "role" : "primary",
+          "rotation" : 0,
+          "start" : 2.55,
+          "text" : "consiga",
+          "x" : 574.74,
+          "y" : 1368.3560325426945
+        }
+      ]
+    },
+    {
+      "accentLineIndex" : 1,
+      "end" : 4.5,
+      "lines" : [
+        {
+          "from" : 0,
+          "to" : 1
+        },
+        {
+          "from" : 2,
+          "to" : 2
+        }
+      ],
+      "start" : 3.03,
+      "text" : "una comunicación excelente",
+      "words" : [
+        {
+          "duration" : 0.15,
+          "fill" : "#111111",
+          "fontFamily" : "Montserrat-Bold",
+          "fontSize" : 71.82,
+          "line" : 0,
+          "role" : "primary",
+          "rotation" : 0,
+          "start" : 3.03,
+          "text" : "una",
+          "x" : 191.26,
+          "y" : 1181.37456
+        },
+        {
+          "duration" : 0.54,
+          "fill" : "#111111",
+          "fontFamily" : "Montserrat-Bold",
+          "fontSize" : 71.82,
+          "line" : 0,
+          "role" : "primary",
+          "rotation" : 0,
+          "start" : 3.18,
+          "text" : "comunicación",
+          "x" : 353.74,
+          "y" : 1181.37456
+        },
+        {
+          "duration" : 0.78,
+          "fill" : "#111111",
+          "fontFamily" : "AppleGaramond-Italic",
+          "fontSize" : 153.89999999999998,
+          "line" : 1,
+          "role" : "accent",
+          "rotation" : 0,
+          "start" : 3.72,
+          "text" : "excelente",
+          "x" : 379.74,
+          "y" : 1296.83302
+        }
+      ]
+    },
+    {
+      "accentLineIndex" : 1,
+      "end" : 5.76,
+      "lines" : [
+        {
+          "from" : 0,
+          "to" : 1
+        },
+        {
+          "from" : 2,
+          "to" : 2
+        },
+        {
+          "from" : 3,
+          "to" : 4
+        }
+      ],
+      "start" : 4.5,
+      "text" : "en su medio de trabajo",
+      "words" : [
+        {
+          "duration" : 0.24,
+          "fill" : "#111111",
+          "fontFamily" : "Montserrat-Bold",
+          "fontSize" : 71.82,
+          "line" : 0,
+          "role" : "primary",
+          "rotation" : 0,
+          "start" : 4.5,
+          "text" : "en",
+          "x" : 347.26,
+          "y" : 1181.37456
+        },
+        {
+          "duration" : 0.15,
+          "fill" : "#111111",
+          "fontFamily" : "Montserrat-Bold",
+          "fontSize" : 71.82,
+          "line" : 0,
+          "role" : "primary",
+          "rotation" : 0,
+          "start" : 4.74,
+          "text" : "su",
+          "x" : 460.74,
+          "y" : 1181.37456
+        },
+        {
+          "duration" : 0.27,
+          "fill" : "#111111",
+          "fontFamily" : "AppleGaramond-Italic",
+          "fontSize" : 153.89999999999998,
+          "line" : 1,
+          "role" : "accent",
+          "rotation" : 0,
+          "start" : 4.89,
+          "text" : "medio",
+          "x" : 364.5,
+          "y" : 1296.83302
+        },
+        {
+          "duration" : 0.12,
+          "fill" : "#111111",
+          "fontFamily" : "Montserrat-Bold",
+          "fontSize" : 71.82,
+          "line" : 2,
+          "role" : "primary",
+          "rotation" : 0,
+          "start" : 5.16,
+          "text" : "de",
+          "x" : 347.26,
+          "y" : 1372.9716600000002
+        },
+        {
+          "duration" : 0.48,
+          "fill" : "#111111",
+          "fontFamily" : "Montserrat-Bold",
+          "fontSize" : 71.82,
+          "line" : 2,
+          "role" : "primary",
+          "rotation" : 0,
+          "start" : 5.28,
+          "text" : "trabajo",
+          "x" : 461.74,
+          "y" : 1372.9716600000002
+        }
+      ]
+    },
+    {
+      "accentLineIndex" : 1,
+      "end" : 7.29,
+      "lines" : [
+        {
+          "from" : 0,
+          "to" : 1
+        },
+        {
+          "from" : 2,
+          "to" : 3
+        }
+      ],
+      "start" : 6.15,
+      "text" : "no es un ABC",
+      "words" : [
+        {
+          "duration" : 0.45,
+          "fill" : "#111111",
+          "fontFamily" : "Montserrat-Bold",
+          "fontSize" : 71.82,
+          "line" : 0,
+          "role" : "primary",
+          "rotation" : 0,
+          "start" : 6.15,
+          "text" : "no",
+          "x" : 343.76,
+          "y" : 1181.37456
+        },
+        {
+          "duration" : 0.18,
+          "fill" : "#111111",
+          "fontFamily" : "Montserrat-Bold",
+          "fontSize" : 71.82,
+          "line" : 0,
+          "role" : "primary",
+          "rotation" : 0,
+          "start" : 6.6,
+          "text" : "es",
+          "x" : 460.24,
+          "y" : 1181.37456
+        },
+        {
+          "duration" : 0.12,
+          "fill" : "#111111",
+          "fontFamily" : "AppleGaramond-Italic",
+          "fontSize" : 153.89999999999998,
+          "line" : 1,
+          "role" : "accent",
+          "rotation" : 0,
+          "start" : 6.78,
+          "text" : "un",
+          "x" : 343.76,
+          "y" : 1288.67632
+        },
+        {
+          "duration" : 0.39,
+          "fill" : "#111111",
+          "fontFamily" : "AppleGaramond-Italic",
+          "fontSize" : 153.89999999999998,
+          "line" : 1,
+          "role" : "accent",
+          "rotation" : 0,
+          "start" : 6.9,
+          "text" : "ABC",
+          "x" : 511.24,
+          "y" : 1288.67632
+        }
+      ]
+    },
+    {
+      "accentLineIndex" : 1,
+      "end" : 8.1,
+      "lines" : [
+        {
+          "from" : 0,
+          "to" : 1
+        },
+        {
+          "from" : 2,
+          "to" : 2
+        }
+      ],
+      "start" : 7.29,
+      "text" : "de tres pasos:",
+      "words" : [
+        {
+          "duration" : 0.15,
+          "fill" : "#111111",
+          "fontFamily" : "Montserrat-Bold",
+          "fontSize" : 71.82,
+          "line" : 0,
+          "role" : "primary",
+          "rotation" : 0,
+          "start" : 7.29,
+          "text" : "de",
+          "x" : 367,
+          "y" : 1181.37456
+        },
+        {
+          "duration" : 0.24,
+          "fill" : "#111111",
+          "fontFamily" : "Montserrat-Bold",
+          "fontSize" : 71.82,
+          "line" : 0,
+          "role" : "primary",
+          "rotation" : 0,
+          "start" : 7.44,
+          "text" : "tres",
+          "x" : 481.48,
+          "y" : 1181.37456
+        },
+        {
+          "duration" : 0.42,
+          "fill" : "#111111",
+          "fontFamily" : "AppleGaramond-Italic",
+          "fontSize" : 153.89999999999998,
+          "line" : 1,
+          "role" : "accent",
+          "rotation" : 0,
+          "start" : 7.68,
+          "text" : "pasos:",
+          "x" : 367,
+          "y" : 1272.36292
+        }
+      ]
+    },
+    {
+      "accentLineIndex" : 0,
+      "end" : 9.54,
+      "lines" : [
+        {
+          "from" : 0,
+          "to" : 1
+        }
+      ],
+      "start" : 8.28,
+      "text" : "Memorizar discursos,",
+      "words" : [
+        {
+          "duration" : 0.5700000000039368,
+          "fill" : "#111111",
+          "fontFamily" : "Montserrat-Bold",
+          "fontSize" : 68.66473421995305,
+          "line" : 0,
+          "role" : "primary",
+          "rotation" : 0,
+          "start" : 8.279999999996063,
+          "text" : "Memorizar",
+          "x" : 75.25999999999999,
+          "y" : 1207.873523778153
+        },
+        {
+          "duration" : 0.69,
+          "fill" : "#111111",
+          "fontFamily" : "AppleGaramond-Italic",
+          "fontSize" : 147.13871618561367,
+          "line" : 0,
+          "role" : "accent",
+          "rotation" : 0,
+          "start" : 8.85,
+          "text" : "discursos,",
+          "x" : 479.74,
+          "y" : 1207.873523778153
+        }
+      ]
+    },
+    {
+      "accentLineIndex" : 1,
+      "end" : 11.46,
+      "lines" : [
+        {
+          "from" : 0,
+          "to" : 1
+        },
+        {
+          "from" : 2,
+          "to" : 3
+        },
+        {
+          "from" : 4,
+          "to" : 4
+        }
+      ],
+      "start" : 9.69,
+      "text" : "aprender cuatro trucos de postura",
+      "words" : [
+        {
+          "duration" : 0.51,
+          "fill" : "#111111",
+          "fontFamily" : "Montserrat-Bold",
+          "fontSize" : 71.82,
+          "line" : 0,
+          "role" : "primary",
+          "rotation" : 0,
+          "start" : 9.69,
+          "text" : "aprender",
+          "x" : 234.26,
+          "y" : 1194.73308
+        },
+        {
+          "duration" : 0.33,
+          "fill" : "#111111",
+          "fontFamily" : "Montserrat-Bold",
+          "fontSize" : 71.82,
+          "line" : 0,
+          "role" : "primary",
+          "rotation" : 0,
+          "start" : 10.2,
+          "text" : "cuatro",
+          "x" : 598.74,
+          "y" : 1194.73308
+        },
+        {
+          "duration" : 0.36,
+          "fill" : "#111111",
+          "fontFamily" : "AppleGaramond-Italic",
+          "fontSize" : 153.89999999999998,
+          "line" : 1,
+          "role" : "accent",
+          "rotation" : 0,
+          "start" : 10.53,
+          "text" : "trucos",
+          "x" : 291.26,
+          "y" : 1323.55006
+        },
+        {
+          "duration" : 0.09,
+          "fill" : "#111111",
+          "fontFamily" : "AppleGaramond-Italic",
+          "fontSize" : 153.89999999999998,
+          "line" : 1,
+          "role" : "accent",
+          "rotation" : 0,
+          "start" : 10.89,
+          "text" : "de",
+          "x" : 654.74,
+          "y" : 1323.55006
+        },
+        {
+          "duration" : 0.48,
+          "fill" : "#111111",
+          "fontFamily" : "Montserrat-Bold",
+          "fontSize" : 71.82,
+          "line" : 2,
+          "role" : "primary",
+          "rotation" : 0,
+          "start" : 10.98,
+          "text" : "postura",
+          "x" : 552.74,
+          "y" : 1390.3521
+        }
+      ]
+    },
+    {
+      "accentLineIndex" : 1,
+      "end" : 13.14,
+      "lines" : [
+        {
+          "from" : 0,
+          "to" : 1
+        },
+        {
+          "from" : 2,
+          "to" : 3
+        },
+        {
+          "from" : 4,
+          "to" : 4
+        }
+      ],
+      "start" : 11.7,
+      "text" : "o lanzarte a hablar más,",
+      "words" : [
+        {
+          "duration" : 0.21,
+          "fill" : "#111111",
+          "fontFamily" : "Montserrat-Bold",
+          "fontSize" : 71.82,
+          "line" : 0,
+          "role" : "primary",
+          "rotation" : 0,
+          "start" : 11.7,
+          "text" : "o",
+          "x" : 307.26,
+          "y" : 1181.37456
+        },
+        {
+          "duration" : 0.57,
+          "fill" : "#111111",
+          "fontFamily" : "Montserrat-Bold",
+          "fontSize" : 71.82,
+          "line" : 0,
+          "role" : "primary",
+          "rotation" : 0,
+          "start" : 11.91,
+          "text" : "lanzarte",
+          "x" : 373.74,
+          "y" : 1181.37456
+        },
+        {
+          "duration" : 0.03,
+          "fill" : "#111111",
+          "fontFamily" : "AppleGaramond-Italic",
+          "fontSize" : 153.89999999999998,
+          "line" : 1,
+          "role" : "accent",
+          "rotation" : 0,
+          "start" : 12.48,
+          "text" : "a",
+          "x" : 307.26,
+          "y" : 1296.83302
+        },
+        {
+          "duration" : 0.3,
+          "fill" : "#111111",
+          "fontFamily" : "AppleGaramond-Italic",
+          "fontSize" : 153.89999999999998,
+          "line" : 1,
+          "role" : "accent",
+          "rotation" : 0,
+          "start" : 12.51,
+          "text" : "hablar",
+          "x" : 398.74,
+          "y" : 1296.83302
+        },
+        {
+          "duration" : 0.33,
+          "fill" : "#111111",
+          "fontFamily" : "Montserrat-Bold",
+          "fontSize" : 71.82,
+          "line" : 2,
+          "role" : "primary",
+          "rotation" : 0,
+          "start" : 12.81,
+          "text" : "más,",
+          "x" : 593.74,
+          "y" : 1370.38614
+        }
+      ]
+    },
+    {
+      "accentLineIndex" : 1,
+      "end" : 14.73,
+      "lines" : [
+        {
+          "from" : 0,
+          "to" : 1
+        },
+        {
+          "from" : 2,
+          "to" : 3
+        }
+      ],
+      "start" : 13.41,
+      "text" : "esperando que un día",
+      "words" : [
+        {
+          "duration" : 0.72,
+          "fill" : "#111111",
+          "fontFamily" : "Montserrat-Bold",
+          "fontSize" : 71.82,
+          "line" : 0,
+          "role" : "primary",
+          "rotation" : 0,
+          "start" : 13.41,
+          "text" : "esperando",
+          "x" : 257.26,
+          "y" : 1194.73308
+        },
+        {
+          "duration" : 0.18,
+          "fill" : "#111111",
+          "fontFamily" : "Montserrat-Bold",
+          "fontSize" : 71.82,
+          "line" : 0,
+          "role" : "primary",
+          "rotation" : 0,
+          "start" : 14.13,
+          "text" : "que",
+          "x" : 675.74,
+          "y" : 1194.73308
+        },
+        {
+          "duration" : 0.12,
+          "fill" : "#111111",
+          "fontFamily" : "AppleGaramond-Italic",
+          "fontSize" : 153.89999999999998,
+          "line" : 1,
+          "role" : "accent",
+          "rotation" : 0,
+          "start" : 14.31,
+          "text" : "un",
+          "x" : 465.26,
+          "y" : 1323.55006
+        },
+        {
+          "duration" : 0.3,
+          "fill" : "#111111",
+          "fontFamily" : "AppleGaramond-Italic",
+          "fontSize" : 153.89999999999998,
+          "line" : 1,
+          "role" : "accent",
+          "rotation" : 0,
+          "start" : 14.43,
+          "text" : "día",
+          "x" : 632.74,
+          "y" : 1323.55006
+        }
+      ]
+    },
+    {
+      "accentLineIndex" : 1,
+      "end" : 16.17,
+      "lines" : [
+        {
+          "from" : 0,
+          "to" : 1
+        },
+        {
+          "from" : 2,
+          "to" : 2
+        }
+      ],
+      "start" : 14.88,
+      "text" : "domines la situación.",
+      "words" : [
+        {
+          "duration" : 0.57,
+          "fill" : "#111111",
+          "fontFamily" : "Montserrat-Bold",
+          "fontSize" : 71.82,
+          "line" : 0,
+          "role" : "primary",
+          "rotation" : 0,
+          "start" : 14.88,
+          "text" : "domines",
+          "x" : 263,
+          "y" : 1181.37456
+        },
+        {
+          "duration" : 0.18,
+          "fill" : "#111111",
+          "fontFamily" : "Montserrat-Bold",
+          "fontSize" : 71.82,
+          "line" : 0,
+          "role" : "primary",
+          "rotation" : 0,
+          "start" : 15.45,
+          "text" : "la",
+          "x" : 609.48,
+          "y" : 1181.37456
+        },
+        {
+          "duration" : 0.54,
+          "fill" : "#111111",
+          "fontFamily" : "AppleGaramond-Italic",
+          "fontSize" : 153.89999999999998,
+          "line" : 1,
+          "role" : "accent",
+          "rotation" : 0,
+          "start" : 15.63,
+          "text" : "situación.",
+          "x" : 263,
+          "y" : 1294.52452
+        }
+      ]
+    },
+    {
+      "accentLineIndex" : 1,
+      "end" : 17.46,
+      "lines" : [
+        {
+          "from" : 0,
+          "to" : 1
+        },
+        {
+          "from" : 2,
+          "to" : 3
+        }
+      ],
+      "start" : 16.62,
+      "text" : "En vez de eso,",
+      "words" : [
+        {
+          "duration" : 0.15,
+          "fill" : "#111111",
+          "fontFamily" : "Montserrat-Bold",
+          "fontSize" : 71.82,
+          "line" : 0,
+          "role" : "primary",
+          "rotation" : 0,
+          "start" : 16.62,
+          "text" : "En",
+          "x" : 359.26,
+          "y" : 1181.37456
+        },
+        {
+          "duration" : 0.09,
+          "fill" : "#111111",
+          "fontFamily" : "Montserrat-Bold",
+          "fontSize" : 71.82,
+          "line" : 0,
+          "role" : "primary",
+          "rotation" : 0,
+          "start" : 16.77,
+          "text" : "vez",
+          "x" : 475.74,
+          "y" : 1181.37456
+        },
+        {
+          "duration" : 0.12,
+          "fill" : "#111111",
+          "fontFamily" : "AppleGaramond-Italic",
+          "fontSize" : 153.89999999999998,
+          "line" : 1,
+          "role" : "accent",
+          "rotation" : 0,
+          "start" : 16.86,
+          "text" : "de",
+          "x" : 359.26,
+          "y" : 1296.83302
+        },
+        {
+          "duration" : 0.48,
+          "fill" : "#111111",
+          "fontFamily" : "AppleGaramond-Italic",
+          "fontSize" : 153.89999999999998,
+          "line" : 1,
+          "role" : "accent",
+          "rotation" : 0,
+          "start" : 16.98,
+          "text" : "eso,",
+          "x" : 509.74,
+          "y" : 1296.83302
+        }
+      ]
+    },
+    {
+      "accentLineIndex" : 1,
+      "end" : 18.57,
+      "lines" : [
+        {
+          "from" : 0,
+          "to" : 1
+        },
+        {
+          "from" : 2,
+          "to" : 2
+        }
+      ],
+      "start" : 17.46,
+      "text" : "existe un sistema",
+      "words" : [
+        {
+          "duration" : 0.51,
+          "fill" : "#111111",
+          "fontFamily" : "Montserrat-Bold",
+          "fontSize" : 71.82,
+          "line" : 0,
+          "role" : "primary",
+          "rotation" : 0,
+          "start" : 17.46,
+          "text" : "existe",
+          "x" : 329,
+          "y" : 1181.37456
+        },
+        {
+          "duration" : 0.12,
+          "fill" : "#111111",
+          "fontFamily" : "Montserrat-Bold",
+          "fontSize" : 71.82,
+          "line" : 0,
+          "role" : "primary",
+          "rotation" : 0,
+          "start" : 17.97,
+          "text" : "un",
+          "x" : 570.48,
+          "y" : 1181.37456
+        },
+        {
+          "duration" : 0.48,
+          "fill" : "#111111",
+          "fontFamily" : "AppleGaramond-Italic",
+          "fontSize" : 153.89999999999998,
+          "line" : 1,
+          "role" : "accent",
+          "rotation" : 0,
+          "start" : 18.09,
+          "text" : "sistema",
+          "x" : 329,
+          "y" : 1286.67562
+        }
+      ]
+    },
+    {
+      "accentLineIndex" : 1,
+      "end" : 20.01,
+      "lines" : [
+        {
+          "from" : 0,
+          "to" : 1
+        },
+        {
+          "from" : 2,
+          "to" : 3
+        },
+        {
+          "from" : 4,
+          "to" : 4
+        }
+      ],
+      "start" : 18.57,
+      "text" : "que te enseña a comunicar",
+      "words" : [
+        {
+          "duration" : 0.15,
+          "fill" : "#111111",
+          "fontFamily" : "Montserrat-Bold",
+          "fontSize" : 71.82,
+          "line" : 0,
+          "role" : "primary",
+          "rotation" : 0,
+          "start" : 18.57,
+          "text" : "que",
+          "x" : 300.26,
+          "y" : 1194.73308
+        },
+        {
+          "duration" : 0.12,
+          "fill" : "#111111",
+          "fontFamily" : "Montserrat-Bold",
+          "fontSize" : 71.82,
+          "line" : 0,
+          "role" : "primary",
+          "rotation" : 0,
+          "start" : 18.72,
+          "text" : "te",
+          "x" : 463.74,
+          "y" : 1194.73308
+        },
+        {
+          "duration" : 0.57,
+          "fill" : "#111111",
+          "fontFamily" : "AppleGaramond-Italic",
+          "fontSize" : 153.89999999999998,
+          "line" : 1,
+          "role" : "accent",
+          "rotation" : 0,
+          "start" : 18.84,
+          "text" : "enseña",
+          "x" : 300.26,
+          "y" : 1314.77776
+        },
+        {
+          "duration" : 0.06,
+          "fill" : "#111111",
+          "fontFamily" : "AppleGaramond-Italic",
+          "fontSize" : 153.89999999999998,
+          "line" : 1,
+          "role" : "accent",
+          "rotation" : 0,
+          "start" : 19.41,
+          "text" : "a",
+          "x" : 704.74,
+          "y" : 1314.77776
+        },
+        {
+          "duration" : 0.54,
+          "fill" : "#111111",
+          "fontFamily" : "Montserrat-Bold",
+          "fontSize" : 71.82,
+          "line" : 2,
+          "role" : "primary",
+          "rotation" : 0,
+          "start" : 19.47,
+          "text" : "comunicar",
+          "x" : 374.74,
+          "y" : 1390.9163999999998
+        }
+      ]
+    },
+    {
+      "accentLineIndex" : 1,
+      "end" : 21.18,
+      "lines" : [
+        {
+          "from" : 0,
+          "to" : 1
+        },
+        {
+          "from" : 2,
+          "to" : 2
+        }
+      ],
+      "start" : 20.01,
+      "text" : "con impacto real",
+      "words" : [
+        {
+          "duration" : 0.21,
+          "fill" : "#111111",
+          "fontFamily" : "Montserrat-Bold",
+          "fontSize" : 71.82,
+          "line" : 0,
+          "role" : "primary",
+          "rotation" : 0,
+          "start" : 20.01,
+          "text" : "con",
+          "x" : 304.76,
+          "y" : 1194.73308
+        },
+        {
+          "duration" : 0.6,
+          "fill" : "#111111",
+          "fontFamily" : "Montserrat-Bold",
+          "fontSize" : 71.82,
+          "line" : 0,
+          "role" : "primary",
+          "rotation" : 0,
+          "start" : 20.22,
+          "text" : "impacto",
+          "x" : 462.24,
+          "y" : 1194.73308
+        },
+        {
+          "duration" : 0.36,
+          "fill" : "#111111",
+          "fontFamily" : "AppleGaramond-Italic",
+          "fontSize" : 153.89999999999998,
+          "line" : 1,
+          "role" : "accent",
+          "rotation" : 0,
+          "start" : 20.82,
+          "text" : "real",
+          "x" : 553.24,
+          "y" : 1323.55006
+        }
+      ]
+    },
+    {
+      "accentLineIndex" : 0,
+      "end" : 22.23,
+      "lines" : [
+        {
+          "from" : 0,
+          "to" : 1
+        }
+      ],
+      "start" : 21.45,
+      "text" : "en reuniones,",
+      "words" : [
+        {
+          "duration" : 0.18,
+          "fill" : "#111111",
+          "fontFamily" : "Montserrat-Bold",
+          "fontSize" : 71.82,
+          "line" : 0,
+          "role" : "primary",
+          "rotation" : 0,
+          "start" : 21.45,
+          "text" : "en",
+          "x" : 191.76,
+          "y" : 1209.1176
+        },
+        {
+          "duration" : 0.6,
+          "fill" : "#111111",
+          "fontFamily" : "AppleGaramond-Italic",
+          "fontSize" : 153.89999999999998,
+          "line" : 0,
+          "role" : "accent",
+          "rotation" : 0,
+          "start" : 21.63,
+          "text" : "reuniones,",
+          "x" : 305.24,
+          "y" : 1209.1176
+        }
+      ]
+    },
+    {
+      "accentLineIndex" : 0,
+      "end" : 23.49,
+      "lines" : [
+        {
+          "from" : 0,
+          "to" : 1
+        }
+      ],
+      "start" : 22.44,
+      "text" : "en presentaciones,",
+      "words" : [
+        {
+          "duration" : 0.17,
+          "fill" : "#111111",
+          "fontFamily" : "Montserrat-Bold",
+          "fontSize" : 68.94862529457971,
+          "line" : 0,
+          "role" : "primary",
+          "rotation" : 0,
+          "start" : 22.44,
+          "text" : "en",
+          "x" : 74.75999999999999,
+          "y" : 1213.599846032993
+        },
+        {
+          "duration" : 0.87,
+          "fill" : "#111111",
+          "fontFamily" : "AppleGaramond-Italic",
+          "fontSize" : 147.74705420267082,
+          "line" : 0,
+          "role" : "accent",
+          "rotation" : 0,
+          "start" : 22.62,
+          "text" : "presentaciones,",
+          "x" : 185.24,
+          "y" : 1213.599846032993
+        }
+      ]
+    },
+    {
+      "accentLineIndex" : 0,
+      "end" : 24.87,
+      "lines" : [
+        {
+          "from" : 0,
+          "to" : 1
+        }
+      ],
+      "start" : 23.79,
+      "text" : "dirigiendo equipos,",
+      "words" : [
+        {
+          "duration" : 0.57,
+          "fill" : "#111111",
+          "fontFamily" : "Montserrat-Bold",
+          "fontSize" : 71.82,
+          "line" : 0,
+          "role" : "primary",
+          "rotation" : 0,
+          "start" : 23.79,
+          "text" : "dirigiendo",
+          "x" : 106.25999999999999,
+          "y" : 1215.1197
+        },
+        {
+          "duration" : 0.51,
+          "fill" : "#111111",
+          "fontFamily" : "AppleGaramond-Italic",
+          "fontSize" : 153.89999999999998,
+          "line" : 0,
+          "role" : "accent",
+          "rotation" : 0,
+          "start" : 24.36,
+          "text" : "equipos,",
+          "x" : 512.74,
+          "y" : 1215.1197
+        }
+      ]
+    },
+    {
+      "accentLineIndex" : 1,
+      "end" : 26.01,
+      "lines" : [
+        {
+          "from" : 0,
+          "to" : 1
+        },
+        {
+          "from" : 2,
+          "to" : 2
+        }
+      ],
+      "start" : 24.99,
+      "text" : "lo que sea.",
+      "words" : [
+        {
+          "duration" : 0.39,
+          "fill" : "#111111",
+          "fontFamily" : "Montserrat-Bold",
+          "fontSize" : 71.82,
+          "line" : 0,
+          "role" : "primary",
+          "rotation" : 0,
+          "start" : 24.99,
+          "text" : "lo",
+          "x" : 422.76,
+          "y" : 1194.73308
+        },
+        {
+          "duration" : 0.21,
+          "fill" : "#111111",
+          "fontFamily" : "Montserrat-Bold",
+          "fontSize" : 71.82,
+          "line" : 0,
+          "role" : "primary",
+          "rotation" : 0,
+          "start" : 25.38,
+          "text" : "que",
+          "x" : 510.24,
+          "y" : 1194.73308
+        },
+        {
+          "duration" : 0.42,
+          "fill" : "#111111",
+          "fontFamily" : "AppleGaramond-Italic",
+          "fontSize" : 153.89999999999998,
+          "line" : 1,
+          "role" : "accent",
+          "rotation" : 0,
+          "start" : 25.59,
+          "text" : "sea.",
+          "x" : 442.24,
+          "y" : 1287.84526
+        }
+      ]
+    }
+  ]
+}

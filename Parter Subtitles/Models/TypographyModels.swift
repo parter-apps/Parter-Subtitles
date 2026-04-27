@@ -15,6 +15,37 @@ struct FontSelection: Codable {
     let accentFamily: String
 }
 
+struct SubtitleInputPayload: Codable {
+    let items: [SubtitleInputItem]
+}
+
+struct SubtitleInputItem: Codable {
+    let text: String
+    let start: Double
+    let end: Double
+    let accentLineIndex: Int
+    let lines: [SubtitleLineRange]?
+    let words: [SubtitleInputWord]
+}
+
+struct SubtitleLineRange: Codable {
+    let from: Int
+    let to: Int
+}
+
+enum SubtitleWordRole: String, Codable {
+    case primary
+    case accent
+}
+
+struct SubtitleInputWord: Codable {
+    let text: String
+    let start: Double
+    let duration: Double
+    let role: SubtitleWordRole
+    let line: Int
+}
+
 struct WordToken: Identifiable {
     let id = UUID()
     let text: String
@@ -68,6 +99,12 @@ struct StyledBlock: Identifiable {
     let role: VisualRole
 }
 
+struct StyledInputWord {
+    let word: SubtitleInputWord
+    let style: WordStyle
+    let measuredSize: CGSize
+}
+
 struct LayoutElement: Identifiable, Codable {
     let id = UUID()
     let text: String
@@ -96,6 +133,29 @@ struct CompositionLayout: Codable {
     let verticalSpacingAdjustmentPx: Double
     let seed: UInt64
     let elements: [LayoutElement]
+}
+
+struct PositionedSubtitleWord: Codable {
+    let text: String
+    let start: Double
+    let duration: Double
+    let role: SubtitleWordRole
+    let line: Int
+    let x: CGFloat
+    let y: CGFloat
+    let fontFamily: String
+    let fontSize: CGFloat
+    let fill: String
+    let rotation: Double
+}
+
+struct PositionedSubtitleItem: Codable {
+    let text: String
+    let start: Double
+    let end: Double
+    let accentLineIndex: Int
+    let lines: [SubtitleLineRange]
+    let words: [PositionedSubtitleWord]
 }
 
 extension Color {
