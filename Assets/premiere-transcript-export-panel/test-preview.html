@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<!--
+  Visual verification page — open in Chrome/Safari.
+  Renders the first 4 phrases from:
+    LEFT:  Expected layout (app JSON — Swift output)
+    RIGHT: JS pipeline output using layoutPipeline.js in-browser
+
+  Coordinates are in 1920×1080 canvas space, scaled to fit.
+-->
+<html>
+<head>
+<meta charset="utf-8">
+<title>Parter Subtitles — Layout Comparison</title>
+<style>
+  body { background: #1e1e1e; color: #e0e0e0; font-family: Arial, sans-serif; padding: 20px; margin: 0; }
+  h2 { color: #6a9fd8; margin-bottom: 4px; font-size: 14px; }
+  p  { font-size: 11px; color: #888; margin: 0 0 12px; }
+  .row { display: flex; gap: 20px; margin-bottom: 16px; align-items: flex-start; }
+  .col { flex: 1; }
+  .col h3 { font-size: 11px; font-weight: 700; color: #aaa; margin: 0 0 4px; text-transform: uppercase; letter-spacing: .05em; }
+  .canvas-wrap {
+    position: relative;
+    background: #e7e7e7;
+    border-radius: 4px;
+    overflow: hidden;
+    display: inline-block;
+  }
+  span.word {
+    position: absolute;
+    line-height: 1;
+    white-space: nowrap;
+  }
+  .phrase-label { font-size: 10px; color: #666; margin: 2px 0 8px; }
+  hr { border: none; border-top: 1px solid #333; margin: 16px 0; }
+  #status { font-size: 11px; color: #6ab87a; margin-bottom: 12px; }
+</style>
+</head>
+<body>
+<h2>Parter Subtitles — Layout Comparison</h2>
+<p>LEFT = Expected (Swift app). RIGHT = JS pipeline (same logic as UXP plugin, but canvas measureText works here).</p>
+<div id="status">Loading…</div>
+<div id="container"></div>
+
+<script src="src/layoutPipeline.js"></script>
+<script>
+// ── Expected output — first 4 phrases from the Swift app JSON ─────────────────
+const APP_PHRASES = [
+  {
+    text: "Estoy absolutamente convencido",
+    words: [
+      { text:"Estoy",         x:561.26, y:678.71, fontSize:71.82,  fontFamily:"Montserrat-Bold",    fontWeight:700 },
+      { text:"absolutamente", x:784.74, y:678.71, fontSize:71.82,  fontFamily:"Montserrat-Bold",    fontWeight:700 },
+      { text:"convencido",    x:723.74, y:808.10, fontSize:153.9,  fontFamily:"AppleGaramond-Italic",fontWeight:400 }
+    ]
+  },
+  {
+    text: "de que hay personas",
+    words: [
+      { text:"de",       x:714.00, y:678.71, fontSize:71.82,  fontFamily:"Montserrat-Bold",    fontWeight:700 },
+      { text:"que",      x:828.48, y:678.71, fontSize:71.82,  fontFamily:"Montserrat-Bold",    fontWeight:700 },
+      { text:"hay",      x:991.96, y:678.71, fontSize:71.82,  fontFamily:"Montserrat-Bold",    fontWeight:700 },
+      { text:"personas", x:714.00, y:783.63, fontSize:153.9,  fontFamily:"AppleGaramond-Italic",fontWeight:400 }
+    ]
+  },
+  {
+    text: "en tu vida",
+    words: [
+      { text:"en",   x:833.50, y:664.77, fontSize:71.82,  fontFamily:"Montserrat-Bold",    fontWeight:700 },
+      { text:"tu",   x:946.98, y:664.77, fontSize:71.82,  fontFamily:"Montserrat-Bold",    fontWeight:700 },
+      { text:"vida", x:833.50, y:780.23, fontSize:153.9,  fontFamily:"AppleGaramond-Italic",fontWeight:400 }
+    ]
+  }
+];
+
+// ── Editorial items to feed the JS pipeline ───────────────────────────────────
+const EDITORIAL_ITEMS = [
+  {
+    text:"Estoy absolutamente convencido", start:0.18, end:2.22, accentLineIndex:1,
+    words:[
+      {text:"Estoy",         start:0.18,duration:0.51,role:"primary",line:0},
+      {text:"absolutamente", start:0.69,duration:0.75,role:"primary",line:0},
+      {text:"convencido",    start:1.44,duration:0.78,role:"accent", line:1}
+    ]
+  },
+  {
+    text:"de que hay personas", start:2.22, end:3.03, accentLineIndex:1,
+    words:[
+      {text:"de",      start:2.22,duration:0.18,role:"primary",line:0},
+      {text:"que",     start:2.40,duration:0.06,role:"primary",line:0},
+      {text:"hay",     start:2.46,duration:0.12,role:"primary",line:0},
+      {text:"personas",start:2.58,duration:0.45,role:"accent", line:1}
+    ]
+  },
+  {
+    text:"en tu vida", start:3.03, end:3.57, accentLineIndex:1,
+    words:[
+      {text:"en",  start:3.03,duration:0.09,role:"primary",line:0},
+      {text:"tu",  start:3.12,duration:0.12,role:"primary",line:0},
+      {text:"vida",start:3.24,duration:0.33,role:"accent", line:1}
+    ]
+  }
+];
+
+const CANVAS_W = 1920, CANVAS_H = 1080;
+const PREVIEW_W = 480, PREVIEW_H = Math.round(PREVIEW_W * CANVAS_H / CANVAS_W);
+const SCALE = PREVIEW_W / CANVAS_W;
+
+// y in both app JSON and JS pipeline = baseline position.
+// For HTML rendering, top = baseline - ascent ≈ baseline - fontSize * 0.72
+function renderPhrase(words, scale, fill) {
+  const wrap = document.createElement("div");
+  wrap.className = "canvas-wrap";
+  wrap.style.width  = Math.round(CANVAS_W * scale) + "px";
+  wrap.style.height = Math.round(CANVAS_H * scale) + "px";
+
+  words.forEach(function(w) {
+    const span = document.createElement("span");
+    span.className = "word";
+    span.textContent = w.text;
+    span.style.left       = Math.round(w.x * scale) + "px";
+    var approxAscent = w.fontSize * 0.72;
+    span.style.top        = Math.round((w.y - approxAscent) * scale) + "px";
+    span.style.fontSize   = (w.fontSize * scale).toFixed(2) + "px";
+    span.style.fontFamily = w.fontFamily + ", Helvetica, Arial, sans-serif";
+    span.style.fontWeight = String(w.fontWeight || 700);
+    span.style.color      = fill || "#111111";
+    wrap.appendChild(span);
+  });
+  return wrap;
+}
+
+// Run the JS pipeline
+const layout = generateLayoutsFromEditorialItems({
+  document: document,
+  items: EDITORIAL_ITEMS,
+  primaryFontFamily: "Montserrat",
+  accentFontFamily: "AppleGaramond-Italic",
+  canvasWidth: CANVAS_W,
+  canvasHeight: CANVAS_H,
+  seed: 42,
+  verticalSpacingAdjustmentPx: 0,
+  wordSpacingAdjustmentPx: 0
+});
+
+const container = document.getElementById("container");
+
+APP_PHRASES.forEach(function(phrase, i) {
+  const jsItem = layout.items[i];
+
+  const row = document.createElement("div");
+  row.className = "row";
+
+  // Left: expected
+  const left = document.createElement("div");
+  left.className = "col";
+  left.innerHTML = '<h3>Expected (app)</h3>';
+  const lLabel = document.createElement("div");
+  lLabel.className = "phrase-label";
+  lLabel.textContent = phrase.text;
+  left.appendChild(lLabel);
+  left.appendChild(renderPhrase(phrase.words, SCALE, "#111111"));
+
+  // Right: JS pipeline
+  const right = document.createElement("div");
+  right.className = "col";
+  right.innerHTML = '<h3>JS pipeline</h3>';
+  const rLabel = document.createElement("div");
+  rLabel.className = "phrase-label";
+  rLabel.textContent = jsItem ? jsItem.text : "—";
+  right.appendChild(rLabel);
+  if (jsItem && jsItem.words) {
+    right.appendChild(renderPhrase(jsItem.words, SCALE, "#111111"));
+    // Log coordinates for first word
+    const w0 = jsItem.words[0];
+    console.log("[Phrase " + i + "] JS word[0]:", JSON.stringify({x:w0.x,y:w0.y,w:w0.width,h:w0.height,fs:w0.fontSize.toFixed(1)}));
+    console.log("[Phrase " + i + "] App word[0]:", JSON.stringify({x:phrase.words[0].x,y:phrase.words[0].y,fs:phrase.words[0].fontSize}));
+  }
+
+  row.appendChild(left);
+  row.appendChild(right);
+  container.appendChild(row);
+
+  if (i < APP_PHRASES.length - 1) {
+    container.appendChild(document.createElement("hr"));
+  }
+});
+
+document.getElementById("status").textContent =
+  "✓ " + layout.items.length + " phrases rendered. First word JS x=" +
+  (layout.items[0] && layout.items[0].words[0] ? layout.items[0].words[0].x.toFixed(1) : "?") +
+  " (expected 561.3)  |  Canvas measureText: open Console to see details.";
+</script>
+</body>
+</html>

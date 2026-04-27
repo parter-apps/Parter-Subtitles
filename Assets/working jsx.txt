@@ -4,9 +4,8 @@ var h = null;
     var OUT = [];
 
     var SETTINGS = {
-        MOGRT_PATH: "/Users/danieldickinson/Documents/GitHub/Parter Subtitles/Assets/subtitles_mogrt.mogrt",
-        JSON_PATH: "/Users/danieldickinson/Documents/GitHub/Parter Subtitles/Assets/layout copy2.json",
-        WORD_TIMINGS_JSON_PATH: "/Users/danieldickinson/Documents/GitHub/Parter Subtitles/Assets/Raveyard - Camara Script 3.json",
+        MOGRT_PATH: "/Users/danieldickinson/Documents/GitHub/Parter-Subtitles/Assets/subtitles_mogrt.mogrt",
+        JSON_PATH: "/Users/danieldickinson/Parter Dropbox/PROJECTES/04. VSL y Anuncios/Alfredo Riaño/202603 - Campaña Abril/04 Recursos/Captions/TRANSCRIPT Microcursos/ADS MICROCURSOS.editorial.json",
         TICKS_PER_SECOND: 254016000000,
         APPLY_POSITION: true,
         APPLY_FONT_STYLE: true,
@@ -206,11 +205,91 @@ var h = null;
 
     function parseLayoutJSON(raw, fps) {
         var data, layouts, i, layout, parsedTC, result, elements, j, el;
+        var layoutStartSeconds, layoutEndSeconds, wordStartSeconds, wordDurationSeconds;
 
         result = [];
         data = parseJSONUnsafe(raw);
 
-        if (!data || !data.layouts || !data.layouts.length) {
+        if (!data) {
+            return result;
+        }
+
+        if (data.items && data.items.length) {
+            layouts = data.items;
+
+            for (i = 0; i < layouts.length; i++) {
+                layout = layouts[i];
+                layoutStartSeconds = Number(layout.start);
+                layoutEndSeconds = Number(layout.end);
+
+                if (isNaN(layoutStartSeconds) || isNaN(layoutEndSeconds) || layoutEndSeconds <= layoutStartSeconds) {
+                    log("Item ignorado por tiempos inválidos en índice " + i + ": start=" + safeToString(layout.start) + " end=" + safeToString(layout.end));
+                    continue;
+                }
+
+                elements = [];
+                if (layout.words && layout.words.length) {
+                    for (j = 0; j < layout.words.length; j++) {
+                        el = layout.words[j];
+                        if (!el) {
+                            continue;
+                        }
+
+                        if (!trimString(el.text)) {
+                            continue;
+                        }
+
+                        wordStartSeconds = Number(el.start);
+                        wordDurationSeconds = Number(el.duration);
+
+                        if (isNaN(wordStartSeconds)) {
+                            wordStartSeconds = layoutStartSeconds;
+                        }
+
+                        if (isNaN(wordDurationSeconds) || wordDurationSeconds < 0) {
+                            wordDurationSeconds = 0;
+                        }
+
+                        elements.push({
+                            text: String(el.text),
+                            x: Number(el.x),
+                            y: Number(el.y),
+                            width: Number(el.width),
+                            height: Number(el.height),
+                            fill: safeToString(el.fill),
+                            opacity: Number(el.opacity),
+                            fontFamily: safeToString(el.fontFamily),
+                            fontSize: Number(el.fontSize),
+                            fontWeight: Number(el.fontWeight),
+                            rotation: Number(el.rotation),
+                            startSeconds: wordStartSeconds,
+                            durationSeconds: wordDurationSeconds,
+                            line: Number(el.line),
+                            role: safeToString(el.role)
+                        });
+                    }
+                }
+
+                if (!elements.length) {
+                    log("Item ignorado por no tener words válidas en índice " + i);
+                    continue;
+                }
+
+                result.push({
+                    phrase: safeToString(layout.text),
+                    background: "",
+                    startTC: "",
+                    endTC: "",
+                    startSeconds: layoutStartSeconds,
+                    endSeconds: layoutEndSeconds,
+                    elements: elements
+                });
+            }
+
+            return result;
+        }
+
+        if (!data.layouts || !data.layouts.length) {
             return result;
         }
 
@@ -267,67 +346,6 @@ var h = null;
                 endSeconds: parsedTC.endSeconds,
                 elements: elements
             });
-        }
-
-        return result;
-    }
-
-    function normalizeWordToken(s) {
-        s = safeToString(s).toLowerCase();
-        s = s.replace(/[\u2018\u2019]/g, "'");
-        s = s.replace(/^[^a-z0-9']+|[^a-z0-9']+$/g, "");
-        return s;
-    }
-
-    function wordsMatch(a, b) {
-        return normalizeWordToken(a) === normalizeWordToken(b);
-    }
-
-    function parseWordTimingsJSON(raw) {
-        var data, result, segments, i, segment, words, j, word, startSeconds, durationSeconds;
-
-        result = [];
-        data = parseJSONUnsafe(raw);
-
-        if (!data || !data.segments || !data.segments.length) {
-            return result;
-        }
-
-        segments = data.segments;
-
-        for (i = 0; i < segments.length; i++) {
-            segment = segments[i];
-            if (!segment || !segment.words || !segment.words.length) {
-                continue;
-            }
-
-            words = segment.words;
-
-            for (j = 0; j < words.length; j++) {
-                word = words[j];
-                if (!word || word.type !== "word" || !trimString(word.text)) {
-                    continue;
-                }
-
-                startSeconds = Number(word.start);
-                durationSeconds = Number(word.duration);
-
-                if (isNaN(startSeconds)) {
-                    continue;
-                }
-
-                if (isNaN(durationSeconds) || durationSeconds < 0) {
-                    durationSeconds = 0;
-                }
-
-                result.push({
-                    text: safeToString(word.text),
-                    normalizedText: normalizeWordToken(word.text),
-                    startSeconds: startSeconds,
-                    durationSeconds: durationSeconds,
-                    endSeconds: startSeconds + durationSeconds
-                });
-            }
         }
 
         return result;
@@ -569,6 +587,50 @@ var h = null;
         } catch (e) {
             return false;
         }
+    }
+
+    function snapSecondsToFrameFloor(seconds, fps) {
+        var frames;
+
+        seconds = Number(seconds);
+        fps = Number(fps);
+
+        if (isNaN(seconds)) {
+            return NaN;
+        }
+
+        if (isNaN(fps) || fps <= 0) {
+            return seconds;
+        }
+
+        frames = Math.floor((seconds * fps) + 0.000001);
+        return frames / fps;
+    }
+
+    function getLayoutEffectiveEndSeconds(items, layoutIndex, fps) {
+        var layout, nextLayout, endSec, nextStartSec, snappedNextStartSec;
+
+        layout = items[layoutIndex];
+        if (!layout) {
+            return NaN;
+        }
+
+        endSec = Number(layout.endSeconds);
+
+        if (layoutIndex + 1 < items.length) {
+            nextLayout = items[layoutIndex + 1];
+            nextStartSec = Number(nextLayout.startSeconds);
+
+            if (!isNaN(nextStartSec)) {
+                snappedNextStartSec = snapSecondsToFrameFloor(nextStartSec, fps);
+
+                if (isNaN(endSec) || snappedNextStartSec > endSec) {
+                    endSec = snappedNextStartSec;
+                }
+            }
+        }
+
+        return endSec;
     }
 
     function findTextPropInClip(clip) {
@@ -1245,10 +1307,9 @@ var h = null;
         };
     }
 
-    function buildWordUnitsFromLayouts(items, timingWords) {
-        var out, i, j, layout, el, totalDur, eachDur, startSec, visibleDur, timingWord, timingWordIndex;
+    function buildWordUnitsFromLayouts(items, fps) {
+        var out, i, j, layout, el, totalDur, eachDur, startSec, visibleDur, endSec, effectiveLayoutEndSec;
         out = [];
-        timingWordIndex = 0;
 
         for (i = 0; i < items.length; i++) {
             layout = items[i];
@@ -1263,24 +1324,29 @@ var h = null;
             }
 
             eachDur = totalDur / layout.elements.length;
+            effectiveLayoutEndSec = getLayoutEffectiveEndSeconds(items, i, fps);
+            if (isNaN(effectiveLayoutEndSec) || effectiveLayoutEndSec <= Number(layout.startSeconds)) {
+                effectiveLayoutEndSec = Number(layout.endSeconds);
+            }
 
             for (j = 0; j < layout.elements.length; j++) {
                 el = layout.elements[j];
-                startSec = Number(layout.startSeconds) + (j * eachDur);
-
-                if (timingWords && timingWordIndex < timingWords.length) {
-                    timingWord = timingWords[timingWordIndex];
-                    if (wordsMatch(el.text, timingWord.text)) {
-                        startSec = Number(timingWord.startSeconds);
-                    } else {
-                        log("TIMING WARN palabra " + timingWordIndex + ": layout='" + el.text + "' timing='" + timingWord.text + "'. Se usa timing del layout.");
-                    }
-                    timingWordIndex++;
+                startSec = Number(el.startSeconds);
+                if (isNaN(startSec)) {
+                    startSec = Number(layout.startSeconds) + (j * eachDur);
                 }
 
-                visibleDur = Number(layout.endSeconds) - startSec;
+                visibleDur = Number(effectiveLayoutEndSec) - startSec;
                 if (visibleDur <= 0) {
+                    visibleDur = Number(el.durationSeconds);
+                }
+                if (isNaN(visibleDur) || visibleDur <= 0) {
                     visibleDur = eachDur;
+                }
+
+                endSec = Number(effectiveLayoutEndSec);
+                if (isNaN(endSec) || endSec <= startSec) {
+                    endSec = startSec + visibleDur;
                 }
 
                 out.push({
@@ -1292,7 +1358,7 @@ var h = null;
                     text: safeToString(el.text),
 
                     startSeconds: startSec,
-                    endSeconds: Number(layout.endSeconds),
+                    endSeconds: endSec,
                     visibleDurationSeconds: visibleDur,
 
                     x: Number(el.x),
@@ -1322,17 +1388,12 @@ var h = null;
             return "JSON_PATH inválido.";
         }
 
-        if (!SETTINGS.WORD_TIMINGS_JSON_PATH || SETTINGS.WORD_TIMINGS_JSON_PATH.indexOf(".json") === -1) {
-            return "WORD_TIMINGS_JSON_PATH inválido.";
-        }
-
         return "";
     }
 
     function run() {
         var settingsError, seq, readResult, items, maxWords, ensureTracksResult, baseTrackIndex, highestTrackLabel, detectedFPS;
         var mogrtFile, created, i, unit, importResult, textResult, positionResult, wordUnits, frameSize, cleanupResult;
-        var timingsReadResult, timingWords;
 
         log("======================================");
         log("INICIO mogrt_from_layout_json");
@@ -1363,24 +1424,19 @@ var h = null;
             return fail(readResult.error);
         }
 
-        timingsReadResult = readTextFile(SETTINGS.WORD_TIMINGS_JSON_PATH);
-        if (!timingsReadResult.ok) {
-            return fail(timingsReadResult.error);
-        }
-
         items = parseLayoutJSON(readResult.content, detectedFPS);
         if (!items || !items.length) {
-            return fail("No se encontraron layouts válidos en el JSON.");
-        }
-
-        timingWords = parseWordTimingsJSON(timingsReadResult.content);
-        if (!timingWords || !timingWords.length) {
-            return fail("No se encontraron words válidas en el JSON de timings.");
+            return fail("No se encontraron bloques válidos en el JSON.");
         }
 
         maxWords = getMaxWordsPerLayout(items);
         if (maxWords < 1) {
-            return fail("No se detectaron elements válidos.");
+            return fail("No se detectaron palabras válidas.");
+        }
+
+        wordUnits = buildWordUnitsFromLayouts(items, detectedFPS);
+        if (!wordUnits || !wordUnits.length) {
+            return fail("No se pudieron generar words válidas desde el JSON.");
         }
 
         log("Secuencia activa: " + safeToString(seq.name));
@@ -1390,8 +1446,8 @@ var h = null;
         if (frameSize) {
             log("Tamaño de secuencia: " + frameSize.width + "x" + frameSize.height);
         }
-        log("Layouts parseados: " + items.length);
-        log("Words parseadas desde timings JSON: " + timingWords.length);
+        log("Bloques parseados: " + items.length);
+        log("Words integradas en JSON: " + wordUnits.length);
         log("Máximo de palabras en un layout: " + maxWords);
 
         cleanupResult = removeEmptyVideoTracksIfPossible(seq);
@@ -1419,7 +1475,6 @@ var h = null;
         log("Pistas nuevas añadidas arriba: " + ensureTracksResult.addedTracks);
         log("Bloque nuevo de pistas empieza en: V" + (baseTrackIndex + 1));
 
-        wordUnits = buildWordUnitsFromLayouts(items, timingWords);
         created = 0;
 
         for (i = 0; i < wordUnits.length; i++) {

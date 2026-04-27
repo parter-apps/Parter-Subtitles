@@ -1,8 +1,8 @@
 {
   "manifestVersion": 5,
-  "id": "com.parter.transcript-export-panel",
-  "name": "Parter Transcript Export",
-  "version": "0.1.0",
+  "id": "com.parter.subtitles",
+  "name": "Parter Subtitles",
+  "version": "1.0.0",
   "main": "index.html",
   "host": {
     "app": "premierepro",
@@ -11,17 +11,24 @@
   "entrypoints": [
     {
       "type": "panel",
-      "id": "transcriptExportPanel",
+      "id": "parterSubtitlesPanel",
       "label": {
-        "default": "Transcript Export"
+        "default": "Parter Subtitles"
       },
       "minimumSize": {
+        "width": 300,
+        "height": 500
+      },
+      "preferredDockedSize": {
         "width": 320,
-        "height": 420
+        "height": 700
       }
     }
   ],
   "requiredPermissions": {
-    "localFileSystem": "request"
+    "localFileSystem": "request",
+    "network": {
+      "domains": []
+    }
   }
 }

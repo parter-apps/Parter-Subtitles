@@ -19,16 +19,11 @@ struct TypographicCanvasView: View {
                     ForEach(layout.elements) { element in
                         Text(element.text)
                             .font(.custom(element.fontFamily, size: element.fontSize))
-                            .fontWeight(.fromNumeric(element.fontWeight))
                             .foregroundStyle(Color(hex: element.fill).opacity(element.opacity))
                             .lineLimit(1)
-                            .minimumScaleFactor(0.7)
-                            .frame(width: element.width, height: element.height)
+                            .fixedSize()
                             .rotationEffect(.degrees(element.rotation))
-                            .position(
-                                x: element.x + element.width / 2,
-                                y: element.y + element.height / 2
-                            )
+                            .offset(x: element.x, y: element.y)
                     }
                 }
                 .frame(width: layout.canvas.width, height: layout.canvas.height, alignment: .topLeading)
@@ -43,20 +38,6 @@ struct TypographicCanvasView: View {
                             .foregroundStyle(.secondary)
                     }
             }
-        }
-    }
-}
-
-private extension Font.Weight {
-    static func fromNumeric(_ value: Int) -> Font.Weight {
-        switch value {
-        case 900...: return .black
-        case 800..<900: return .heavy
-        case 700..<800: return .bold
-        case 600..<700: return .semibold
-        case 500..<600: return .medium
-        case 400..<500: return .regular
-        default: return .light
         }
     }
 }

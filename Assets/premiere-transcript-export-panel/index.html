@@ -2,20 +2,363 @@
 <html>
 <head>
     <meta charset="utf-8">
-    <title>Parter Transcript Export</title>
-    <link rel="stylesheet" href="styles.css">
+    <title>Parter Subtitles</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        html, body {
+            height: 100%;
+            font-family: -apple-system, "Adobe Clean", Arial, sans-serif;
+            font-size: 12px;
+            color: #e0e0e0;
+            background: #1e1e1e;
+            overflow: hidden;
+        }
+
+        .app {
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+        }
+
+        /* ── Top: side nav + scrollable content ──────────────────── */
+        .app-body {
+            display: flex;
+            flex-direction: row;
+            flex: 1;
+            overflow: hidden;
+        }
+
+        /* ── Left navigation bar ─────────────────────────────────── */
+        .side-nav {
+            width: 52px;
+            background: #252525;
+            border-right: 1px solid #303030;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding-top: 10px;
+            gap: 2px;
+            flex-shrink: 0;
+        }
+
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            padding: 7px 3px;
+            cursor: pointer;
+            border-radius: 5px;
+            width: 44px;
+            user-select: none;
+        }
+
+        .nav-item:hover { background: #2e2e2e; }
+        .nav-item.active { background: #1e2d3e; }
+
+        .nav-num {
+            width: 22px; height: 22px;
+            border-radius: 50%;
+            background: #444;
+            color: #aaa;
+            font-size: 11px; font-weight: 700;
+            display: flex; align-items: center; justify-content: center;
+            flex-shrink: 0;
+        }
+        .nav-item.active .nav-num { background: #6a9fd8; color: #fff; }
+        .nav-num.done { background: #4a8a5a !important; color: #fff !important; }
+
+        .nav-label {
+            font-size: 8px;
+            font-weight: 700;
+            color: #666;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+            text-align: center;
+            line-height: 1.3;
+        }
+        .nav-item.active .nav-label { color: #9ab; }
+
+        /* ── Main scrollable content ─────────────────────────────── */
+        .main {
+            flex: 1;
+            overflow-y: auto;
+            padding: 12px;
+        }
+
+        .step-content { display: none; }
+        .step-content.visible { display: block; }
+        .step-content > * + * { margin-top: 10px; }
+
+        .step-heading {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid #2e2e2e;
+            margin-bottom: 10px;
+        }
+        .step-heading h2 {
+            font-size: 11px; font-weight: 700; color: #bbb;
+            text-transform: uppercase; letter-spacing: 0.06em;
+        }
+        .step-meta { margin-left: auto; font-size: 10px; color: #aaa; }
+
+        /* Fields */
+        .field-row {
+            display: flex;
+            flex-direction: row;
+            flex-wrap: wrap;
+            gap: 6px;
+        }
+
+        .field {
+            display: flex;
+            flex-direction: column;
+            gap: 3px;
+            flex: 1 1 100px;
+        }
+
+        .field.full { flex: 1 1 100%; }
+
+        .field > span {
+            font-size: 10px;
+            color: #777;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+        }
+
+        input[type="text"],
+        input[type="number"],
+        select {
+            background: #1a1a1a;
+            border: 1px solid #3a3a3a;
+            border-radius: 3px;
+            color: #e0e0e0;
+            font-size: 12px;
+            padding: 4px 6px;
+            width: 100%;
+        }
+
+        input:focus, select:focus { outline: none; border-color: #6a9fd8; }
+
+        button {
+            border: none; border-radius: 4px;
+            font-size: 12px; font-weight: 600;
+            cursor: pointer; padding: 6px 12px;
+        }
+        button:disabled { opacity: 0.4; cursor: default; }
+
+        .btn-primary  { background: #6a9fd8; color: #fff; }
+        .btn-primary:hover:not(:disabled) { background: #5590cc; }
+
+        .btn-cta {
+            background: #4a8a5a; color: #fff;
+            padding: 8px 14px; font-size: 13px; width: 100%;
+        }
+        .btn-cta:hover:not(:disabled) { background: #3a7a4a; }
+
+        .btn-secondary { background: #333; color: #ccc; }
+        .btn-secondary:hover:not(:disabled) { background: #444; }
+
+        .btn-row { display: flex; flex-direction: row; gap: 6px; flex-wrap: wrap; }
+
+        /* Preview */
+        .preview-outer {
+            position: relative;
+            overflow: hidden;
+            background: #111;
+            border-radius: 4px;
+        }
+
+        .preview-placeholder {
+            padding: 36px 0;
+            text-align: center;
+            color: #555;
+            font-size: 11px;
+            background: #1a1a1a;
+            border-radius: 4px;
+        }
+
+        .preview-nav {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 4px 0;
+        }
+
+        .preview-nav span { font-size: 11px; color: #777; }
+
+        /* MOGRT row */
+        .mogrt-row {
+            display: flex;
+            align-items: flex-end;
+            gap: 6px;
+        }
+        .mogrt-row .field { flex: 1; }
+
+        /* ── Bottom bar: always visible ───────────────────────────── */
+        .bottom-bar {
+            border-top: 1px solid #2a2a2a;
+            padding: 6px 10px;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            flex-shrink: 0;
+        }
+
+        .status-bar { font-size: 11px; color: #777; }
+        .status-bar.ok    { color: #6ab87a; }
+        .status-bar.error { color: #e07070; }
+
+        .log-wrap {
+            background: #111; border-radius: 3px;
+            max-height: 72px; overflow-y: auto;
+        }
+        #log {
+            font-size: 10px; color: #555; font-family: monospace;
+            padding: 4px 8px; white-space: pre-wrap; word-break: break-all;
+        }
+
+        .badge {
+            display: inline-block; background: #4a8a5a; color: #fff;
+            border-radius: 10px; font-size: 10px; font-weight: 700; padding: 2px 7px;
+        }
+        .hint { font-size: 10px; color: #555; font-style: italic; }
+    </style>
     <script src="index.js"></script>
 </head>
 <body>
-    <section class="panel">
-        <div class="card">
-            <p class="eyebrow">Premiere UXP Probe</p>
-            <h1 class="title">Transcript Export</h1>
-            <p class="subtitle">Export the active sequence transcript once, then also derive sentence-grouped JSON and a TXT file with the same timecode-plus-text structure as your sample export.</p>
-            <button id="exportBtn" type="button" uxp-variant="cta">Export Transcript, Sentences and TXT</button>
-            <div class="status" id="status">Loading...</div>
-            <pre class="log" id="log"></pre>
-        </div>
-    </section>
+<div class="app">
+    <div class="app-body">
+
+        <!-- Left nav -->
+        <nav class="side-nav">
+            <div class="nav-item active" data-step="1" id="nav1">
+                <div class="nav-num" id="step1Num">1</div>
+                <div class="nav-label">Trans<br>cript</div>
+            </div>
+            <div class="nav-item" data-step="2" id="nav2">
+                <div class="nav-num" id="step2Num">2</div>
+                <div class="nav-label">Style</div>
+            </div>
+            <div class="nav-item" data-step="3" id="nav3">
+                <div class="nav-num" id="step3Num">3</div>
+                <div class="nav-label">Apply</div>
+            </div>
+        </nav>
+
+        <!-- Content -->
+        <div class="main">
+
+            <!-- Step 1 -->
+            <div class="step-content visible" id="stepContent1">
+                <div class="step-heading">
+                    <h2>Transcript</h2>
+                    <span class="step-meta" id="phraseCountBadge"></span>
+                </div>
+                <button class="btn-primary" id="loadTranscriptBtn" type="button">Load Active Transcript</button>
+                <p class="hint" id="canvasInfo"></p>
+            </div>
+
+            <!-- Step 2 -->
+            <div class="step-content" id="stepContent2">
+                <div class="step-heading">
+                    <h2>Style &amp; Preview</h2>
+                </div>
+
+                <div class="field-row">
+                    <label class="field full">
+                        <span>Primary Font</span>
+                        <select id="primaryFontFamily">
+                            <option value="Montserrat" selected>Montserrat</option>
+                            <option value="Montserrat-Bold">Montserrat Bold</option>
+                            <option value="Helvetica Neue">Helvetica Neue</option>
+                            <option value="Helvetica">Helvetica</option>
+                            <option value="Avenir">Avenir</option>
+                            <option value="Avenir Next">Avenir Next</option>
+                            <option value="Avenir Next Condensed">Avenir Next Condensed</option>
+                            <option value="Futura">Futura</option>
+                            <option value="Arial">Arial</option>
+                            <option value="Gill Sans">Gill Sans</option>
+                            <option value="Trebuchet MS">Trebuchet MS</option>
+                            <option value="Verdana">Verdana</option>
+                        </select>
+                    </label>
+                </div>
+
+                <div class="field-row">
+                    <label class="field full">
+                        <span>Accent Font</span>
+                        <select id="accentFontFamily">
+                            <option value="AppleGaramond-Italic" selected>Apple Garamond Italic</option>
+                            <option value="Apple Garamond Pro Italic">Apple Garamond Pro Italic</option>
+                            <option value="Baskerville-Italic">Baskerville Italic</option>
+                            <option value="Baskerville SemiBold Italic">Baskerville SemiBold Italic</option>
+                            <option value="Georgia">Georgia</option>
+                            <option value="Palatino-Italic">Palatino Italic</option>
+                            <option value="Times New Roman Italic">Times New Roman Italic</option>
+                            <option value="Times-Italic">Times Italic</option>
+                            <option value="Didot-Italic">Didot Italic</option>
+                            <option value="Hoefler Text Italic">Hoefler Text Italic</option>
+                            <option value="Garamond">Garamond</option>
+                        </select>
+                    </label>
+                </div>
+
+                <div class="field-row">
+                    <label class="field">
+                        <span>Vertical Spacing (px)</span>
+                        <input id="verticalSpacingAdjustmentPx" type="number" value="0">
+                    </label>
+                    <label class="field">
+                        <span>Word Spacing (px)</span>
+                        <input id="wordSpacingAdjustmentPx" type="number" value="0">
+                    </label>
+                    <label class="field">
+                        <span>Seed</span>
+                        <input id="seed" type="number" value="42">
+                    </label>
+                </div>
+
+                <div class="preview-placeholder" id="previewPlaceholder">Load a transcript to preview</div>
+                <div class="preview-outer" id="previewOuter" style="display:none;"></div>
+
+                <div class="preview-nav">
+                    <button class="btn-secondary" id="prevPhraseBtn" type="button" disabled>&#8592;</button>
+                    <span id="previewLabel">&#8212; / &#8212;</span>
+                    <button class="btn-secondary" id="nextPhraseBtn" type="button" disabled>&#8594;</button>
+                </div>
+            </div>
+
+            <!-- Step 3 -->
+            <div class="step-content" id="stepContent3">
+                <div class="step-heading">
+                    <h2>Apply to Premiere</h2>
+                </div>
+                <div class="mogrt-row">
+                    <label class="field">
+                        <span>MOGRT File</span>
+                        <input id="mogrtPath" type="text" placeholder="/path/to/subtitle.mogrt" readonly>
+                    </label>
+                    <button class="btn-secondary" id="browseMogrtBtn" type="button">Browse</button>
+                </div>
+                <button class="btn-cta" id="applyBtn" type="button" disabled>&#9654;&nbsp;Apply to Premiere</button>
+                <div class="btn-row">
+                    <button class="btn-secondary" id="exportJsonBtn" type="button" disabled>Export Layout JSON</button>
+                </div>
+            </div>
+
+        </div><!-- /.main -->
+    </div><!-- /.app-body -->
+
+    <!-- Bottom bar: always visible -->
+    <div class="bottom-bar">
+        <div class="status-bar" id="status">Ready</div>
+        <div class="log-wrap"><pre id="log"></pre></div>
+    </div>
+</div><!-- /.app -->
 </body>
 </html>

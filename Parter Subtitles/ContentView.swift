@@ -18,14 +18,14 @@ struct ContentView: View {
 
                 TextEditor(text: $viewModel.inputText)
                     .font(.system(size: 16))
-                    .frame(height: 96)
+                    .frame(height: 180)
                     .padding(6)
                     .background(.black.opacity(0.04))
                     .clipShape(RoundedRectangle(cornerRadius: 10))
 
                 HStack(spacing: 12) {
-                    Button("Import TXT") {
-                        viewModel.importTXT()
+                    Button("Import JSON") {
+                        viewModel.importJSON()
                     }
                 }
 
@@ -50,9 +50,8 @@ struct ContentView: View {
                         .frame(width: 90)
                     TextField("Height", value: $viewModel.canvasHeight, format: .number)
                         .frame(width: 90)
-                    Text("Seed: \(viewModel.seed)")
-                        .font(.caption)
-                        .foregroundStyle(.secondary)
+                    TextField("Text scale", text: $viewModel.textScaleInput)
+                        .frame(width: 110)
                 }
 
                 HStack(spacing: 12) {
@@ -62,6 +61,32 @@ struct ContentView: View {
                             .foregroundStyle(.secondary)
                         HStack(spacing: 8) {
                             TextField("e.g. 40 or -10", value: $viewModel.verticalSpacingAdjustmentPx, format: .number)
+                                .frame(width: 120)
+                            Text("px")
+                                .font(.caption)
+                                .foregroundStyle(.secondary)
+                        }
+                    }
+
+                    VStack(alignment: .leading, spacing: 4) {
+                        Text("Word spacing: \(viewModel.wordSpacingAdjustmentPx, specifier: "%.0f") px")
+                            .font(.caption)
+                            .foregroundStyle(.secondary)
+                        HStack(spacing: 8) {
+                            TextField("e.g. 8 or -4", value: $viewModel.wordSpacingAdjustmentPx, format: .number)
+                                .frame(width: 120)
+                            Text("px")
+                                .font(.caption)
+                                .foregroundStyle(.secondary)
+                        }
+                    }
+
+                    VStack(alignment: .leading, spacing: 4) {
+                        Text("Row 2-3 spacing: \(viewModel.lowerRowSpacingAdjustmentPx, specifier: "%.0f") px")
+                            .font(.caption)
+                            .foregroundStyle(.secondary)
+                        HStack(spacing: 8) {
+                            TextField("e.g. 12 or -8", value: $viewModel.lowerRowSpacingAdjustmentPx, format: .number)
                                 .frame(width: 120)
                             Text("px")
                                 .font(.caption)

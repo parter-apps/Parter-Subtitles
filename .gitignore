@@ -1,0 +1,14 @@
+.DS_Store
+.AppleDouble
+.LSOverride
+Icon
+
+xcuserdata/
+*.xcuserstate
+DerivedData/
+build/
+
+node_modules/
+
+__pycache__/
+*.pyc
