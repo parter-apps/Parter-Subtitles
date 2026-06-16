@@ -108,6 +108,10 @@ struct ContentView: View {
                     }
                 }
 
+                if !viewModel.sourceItems.isEmpty {
+                    PhraseEditorView(viewModel: viewModel)
+                }
+
                 HStack(spacing: 10) {
                     Button("Generate") {
                         viewModel.generate(newSeed: false)

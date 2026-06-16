@@ -70,6 +70,13 @@ struct TranscriptSegmenter {
         return buildEditorialItems(words, segments, fps)
     }
 
+    /// Re-runs only the line-breaking for one explicit phrase (no phrase
+    /// splitting). Used when merging/splitting phrases in the editor.
+    func relineate(words: [RawWord], fps: Double? = nil) -> SubtitleInputItem? {
+        guard !words.isEmpty else { return nil }
+        return buildEditorialItems(words, [(0, words.count - 1)], fps).first
+    }
+
     // MARK: - Classification
 
     private static let wordChars = CharacterSet.alphanumerics
