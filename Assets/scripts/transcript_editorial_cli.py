@@ -21,7 +21,11 @@ import time
 from pathlib import Path
 
 
-ARTICLES = {"el", "la", "los", "las", "lo", "un", "una", "unos", "unas", "al", "del"}
+ARTICLES = {
+    "el", "la", "los", "las", "lo", "un", "una", "unos", "unas", "al", "del",
+    # English determiners/articles
+    "the", "an", "every", "each", "another", "this", "these", "those",
+}
 PREPS = {
     "a",
     "ante",
@@ -47,8 +51,18 @@ PREPS = {
     "tras",
     "versus",
     "via",
+    # English prepositions
+    "of", "to", "in", "on", "at", "by", "for", "with", "from", "into", "onto",
+    "upon", "about", "over", "under", "between", "through", "during", "without",
+    "within", "toward", "towards", "after", "before", "against", "among",
+    "across", "behind", "below", "beside", "beyond", "near",
 }
-CONJ = {"y", "e", "ni", "o", "u", "pero", "mas", "más", "aunque", "sino", "si", "que"}
+CONJ = {
+    "y", "e", "ni", "o", "u", "pero", "mas", "más", "aunque", "sino", "si", "que",
+    # English conjunctions / subordinators
+    "and", "or", "but", "nor", "yet", "because", "although", "though", "while",
+    "whereas", "unless", "since", "as", "than", "that", "whether", "when", "where", "if",
+}
 PRON = {
     "me",
     "te",
@@ -90,8 +104,16 @@ PRON = {
     "eso",
     "esto",
     "aquello",
+    # English pronouns / possessives
+    "i", "you", "he", "she", "it", "we", "they",
+    "him", "us", "them",
+    "my", "your", "his", "her", "its", "our", "their",
+    "mine", "yours", "hers", "ours", "theirs",
+    "who", "whom", "whose", "which", "what",
+    "myself", "yourself", "himself", "herself", "itself", "ourselves",
+    "yourselves", "themselves",
 }
-ADVS = {"no", "mas", "más"}
+ADVS = {"no", "mas", "más", "not"}
 
 TERMINAL_RE = re.compile(r"""[.!?…]+["']?$""")
 SOFT_RE = re.compile(r"""[,;:]+["']?$""")

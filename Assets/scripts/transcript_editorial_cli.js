@@ -4,7 +4,11 @@
 const fs = require("fs");
 const path = require("path");
 
-const ARTICLES = new Set(["el", "la", "los", "las", "lo", "un", "una", "unos", "unas", "al", "del"]);
+const ARTICLES = new Set([
+    "el", "la", "los", "las", "lo", "un", "una", "unos", "unas", "al", "del",
+    // English determiners/articles
+    "the", "an", "every", "each", "another", "this", "these", "those"
+]);
 const PREPS = new Set([
     "a",
     "ante",
@@ -29,9 +33,19 @@ const PREPS = new Set([
     "sobre",
     "tras",
     "versus",
-    "via"
+    "via",
+    // English prepositions
+    "of", "to", "in", "on", "at", "by", "for", "with", "from", "into", "onto",
+    "upon", "about", "over", "under", "between", "through", "during", "without",
+    "within", "toward", "towards", "after", "before", "against", "among",
+    "across", "behind", "below", "beside", "beyond", "near"
 ]);
-const CONJ = new Set(["y", "e", "ni", "o", "u", "pero", "mas", "más", "aunque", "sino", "si", "que"]);
+const CONJ = new Set([
+    "y", "e", "ni", "o", "u", "pero", "mas", "más", "aunque", "sino", "si", "que",
+    // English conjunctions / subordinators
+    "and", "or", "but", "nor", "yet", "because", "although", "though", "while",
+    "whereas", "unless", "since", "as", "than", "that", "whether", "when", "where", "if"
+]);
 const PRON = new Set([
     "me",
     "te",
@@ -72,9 +86,17 @@ const PRON = new Set([
     "aquellas",
     "eso",
     "esto",
-    "aquello"
+    "aquello",
+    // English pronouns / possessives
+    "i", "you", "he", "she", "it", "we", "they",
+    "him", "us", "them",
+    "my", "your", "his", "her", "its", "our", "their",
+    "mine", "yours", "hers", "ours", "theirs",
+    "who", "whom", "whose", "which", "what",
+    "myself", "yourself", "himself", "herself", "itself", "ourselves",
+    "yourselves", "themselves"
 ]);
-const ADVS = new Set(["no", "mas", "más"]);
+const ADVS = new Set(["no", "mas", "más", "not"]);
 
 const TERMINAL_RE = /[.!?…]+["']?$/u;
 const SOFT_RE = /[,;:]+["']?$/u;
