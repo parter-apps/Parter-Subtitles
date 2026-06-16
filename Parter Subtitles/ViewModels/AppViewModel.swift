@@ -193,9 +193,33 @@ final class AppViewModel: ObservableObject {
     private func parseItems(from raw: String) -> [SubtitleInputItem] {
         guard let data = raw.data(using: .utf8) else { return [] }
         let decoder = JSONDecoder()
-        if let payload = try? decoder.decode(SubtitleInputPayload.self, from: data) {
+
+        // Already-editorial payload ({ "items": [...] }) — use as-is.
+        if let payload = try? decoder.decode(SubtitleInputPayload.self, from: data),
+           !payload.items.isEmpty {
             return payload.items
         }
+
+        // Raw Premiere transcript ({ "segments": [{ "words": [...] }] }) —
+        // segment it into editorial items in-app.
+        if let transcript = try? decoder.decode(RawTranscriptPayload.self, from: data) {
+            let words = (transcript.segments ?? []).flatMap { $0.words ?? [] }
+            if !words.isEmpty {
+                let rawWords = words.map {
+                    TranscriptSegmenter.RawWord(text: $0.text, start: $0.start, duration: $0.duration)
+                }
+                return TranscriptSegmenter().segment(words: rawWords, fps: transcript.fps)
+            }
+        }
+
+        // Top-level word array ([{ "text", "start", "duration" }, ...]).
+        if let words = try? decoder.decode([RawTranscriptWord].self, from: data), !words.isEmpty {
+            let rawWords = words.map {
+                TranscriptSegmenter.RawWord(text: $0.text, start: $0.start, duration: $0.duration)
+            }
+            return TranscriptSegmenter().segment(words: rawWords, fps: nil)
+        }
+
         return []
     }
 

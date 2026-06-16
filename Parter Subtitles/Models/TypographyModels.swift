@@ -19,6 +19,25 @@ struct SubtitleInputPayload: Codable {
     let items: [SubtitleInputItem]
 }
 
+// MARK: - Raw Premiere transcript (Transcript.exportToJSON)
+
+/// Shape of a raw Premiere transcript export: `{ segments: [{ words: [...] }] }`.
+/// The app segments this into editorial `SubtitleInputItem`s via `TranscriptSegmenter`.
+struct RawTranscriptPayload: Codable {
+    let segments: [RawTranscriptSegment]?
+    let fps: Double?
+}
+
+struct RawTranscriptSegment: Codable {
+    let words: [RawTranscriptWord]?
+}
+
+struct RawTranscriptWord: Codable {
+    let text: String
+    let start: Double
+    let duration: Double
+}
+
 struct SubtitleInputItem: Codable {
     let text: String
     let start: Double
